@@ -4,15 +4,16 @@
 [ext_resource type="Texture2D" uid="uid://brq1481fdqylt" path="res://Resources/UIAssets/Alien.png" id="2_cn7bp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_54cwd"]
-size = Vector2(243.5, 118)
+size = Vector2(506, 186)
 
 [node name="Desk" type="Area2D" unique_id=130957007]
 script = ExtResource("1_hicrt")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=489386418]
-position = Vector2(4.351139e-06, 1)
-scale = Vector2(0.6506667, 0.3803681)
+position = Vector2(-5.0000114, 20.000008)
+scale = Vector2(1.3493333, 0.5705522)
 texture = ExtResource("2_cn7bp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1783923406]
+position = Vector2(-5, 20)
 shape = SubResource("RectangleShape2D_54cwd")

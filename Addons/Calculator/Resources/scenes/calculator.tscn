@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://xsvk2fnflv5o"]
 
-[ext_resource type="Script" uid="uid://buiyf1aagynyu" path="res://Addons/Calculator/Resources/scenes/calculator.gd" id="1_ayn2l"]
+[ext_resource type="Script" uid="uid://buiyf1aagynyu" path="res://Addons/Calculator/Resources/scripts/calculator.gd" id="1_ayn2l"]
 [ext_resource type="Theme" uid="uid://co1ejnclhqsqx" path="res://Addons/Calculator/Resources/others/default_theme.tres" id="1_p2y8q"]
 [ext_resource type="Script" uid="uid://dk2ew56wh4flx" path="res://Addons/Calculator/Resources/scripts/calculator_control.gd" id="2_uciuf"]
 [ext_resource type="Texture2D" uid="uid://rw0wvfawg83w" path="res://Addons/Calculator/Resources/images/Delete.svg" id="3_ayn2l"]
@@ -223,12 +223,14 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.329412, 0.329412, 0.329412, 1)
 horizontal_alignment = 2
 
-[node name="work_lbl" type="Label" parent="CalculatorControl/Screen/HBoxContainer/WorkArea_container" unique_id=1340336676]
+[node name="work_lbl" type="RichTextLabel" parent="CalculatorControl/Screen/HBoxContainer/WorkArea_container" unique_id=1648504733]
 layout_mode = 2
-theme_override_font_sizes/font_size = 50
+focus_mode = 2
+theme_override_font_sizes/normal_font_size = 50
 text = "0"
+fit_content = true
 horizontal_alignment = 2
-text_overrun_behavior = 1
+selection_enabled = true
 
 [node name="spacer2" type="Control" parent="CalculatorControl/Screen/HBoxContainer" unique_id=1710341527]
 layout_mode = 2

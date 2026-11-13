@@ -13,6 +13,8 @@ gradient = SubResource("Gradient_6c7u1")
 [node name="WorkPlace" type="Node2D" unique_id=1718905792]
 script = ExtResource("1_nsi5y")
 
+[node name="BackGroundSprite" type="Sprite2D" parent="." unique_id=124227825]
+
 [node name="Desk" parent="." unique_id=130957007 instance=ExtResource("2_tug3r")]
 position = Vector2(571, 543)
 

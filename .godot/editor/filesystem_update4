@@ -1,4 +1,6 @@
 res://Addons/Calculator/Resources/scenes/calculator.tscn
 res://Addons/Calculator/Resources/others/default_theme.tres
-res://Addons/Calculator/Resources/scenes/calculator.gd
-res://Classes/ObjectClasses/Board.gd
+res://Scenes&Scripts/GameObjects/desk/desk.tscn
+res://Classes/CustomerClasses/Customer.gd
+res://Scenes&Scripts/work_place/work_place.gd
+res://Scenes&Scripts/work_place/work_place.tscn

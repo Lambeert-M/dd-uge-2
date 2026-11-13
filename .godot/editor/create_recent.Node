@@ -1,5 +1,6 @@
-Board
 Sprite2D
+RichTextLabel
+Board
 Label
 Button
 CanvasLayer

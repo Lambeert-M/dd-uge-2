@@ -27,6 +27,9 @@ func customer_arrive() -> void:
 	is_serving = true
 	current_customer = Customer.new(Customer.get_random_customer_name())
 	add_child(current_customer)
+	# Loads current_customer just in front of backgroun at index 0
+	move_child(current_customer, 1)
+	
 	############################################################################
 	# Insert animation
 	current_customer.position = Vector2i(get_viewport_rect().size/2)

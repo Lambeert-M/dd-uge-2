@@ -36,6 +36,7 @@ func _init(new_name: String, sprite_path: String = "") -> void:
 	else:
 		sprite.texture = load("res://Resources/Customers/" + new_name + "/" + new_name.to_lower() + ".jpg")
 	add_child(sprite)
+	
 
 func want_to_speak() -> void:
 	# Add sprite to scenetree
