@@ -2,6 +2,7 @@ extends Node2D
 
 # Default pay, that can be deviated from
 const MAXPAYMENT = 20
+const EXACT_TOLERANCE := 0.005 # under en halv øre fra det rigtige svar tæller som præcis
 const CALCULATOR_SCENE := preload("res://Addons/Calculator/Resources/scenes/calculator.tscn")
 const RULEBOOK := preload("res://Scenes&Scripts/InteractiveScenes/rulebook.tscn")
 const WELCOME_LETTER := "res://Resources/Letters/welcome_letter.txt"
