@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://cxftbpdnvtbgb"]
+
+[ext_resource type="Texture2D" uid="uid://c7t3xlhqjjflg" path="res://Resources/UIAssets/titlescreen.jpg" id="1_6c5c1"]
+[ext_resource type="Texture2D" uid="uid://dcwogk5bve4o8" path="res://Resources/UIAssets/PlayButton/PlayButton.png" id="1_khqc7"]
+[ext_resource type="Script" uid="uid://8i6oes26jd4j" path="res://Scenes&Scripts/InteractiveScenes/titlescreen.gd" id="1_pftxu"]
+[ext_resource type="Texture2D" uid="uid://bseyoabs418ph" path="res://Resources/UIAssets/PlayButton/Clickbutton.png" id="2_6c5c1"]
+[ext_resource type="Texture2D" uid="uid://diwe78bo1qlt4" path="res://Resources/UIAssets/PlayButton/PlayButtonHover.png" id="3_pftxu"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_npppq"]
+font_color = Color(0.48235294, 1, 1, 1)
+outline_size = 7
+outline_color = Color(0, 0, 0, 1)
+
+[node name="Control" type="Control" unique_id=1686155103]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1031.0
+offset_bottom = -546.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pftxu")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=58332214]
+position = Vector2(960, 540)
+texture = ExtResource("1_6c5c1")
+
+[node name="MainMenuPlayButton" type="TextureButton" parent="." unique_id=1993455512]
+layout_mode = 0
+offset_left = 651.0
+offset_top = 136.0
+offset_right = 1291.0
+offset_bottom = 356.0
+texture_normal = ExtResource("1_khqc7")
+texture_pressed = ExtResource("2_6c5c1")
+texture_hover = ExtResource("3_pftxu")
+
+[node name="MainMenuLoginButton" type="Button" parent="." unique_id=1462093318]
+layout_mode = 0
+offset_left = 811.0
+offset_top = 380.0
+offset_right = 1131.0
+offset_bottom = 470.0
+theme_override_font_sizes/font_size = 48
+text = "Log ind"
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1254674282]
+position = Vector2(958, 539)
+zoom = Vector2(0.601, 0.601)
+
+[node name="VolumeLayer" type="CanvasLayer" parent="." unique_id=616100176]
+
+[node name="VolumeGrid" type="GridContainer" parent="VolumeLayer" unique_id=169071070]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -70.0
+offset_right = 344.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="MusicLabel" type="Label" parent="VolumeLayer/VolumeGrid" unique_id=2060531994]
+layout_mode = 2
+text = "Musik"
+
+[node name="MusicSlider" type="HSlider" parent="VolumeLayer/VolumeGrid" unique_id=1136815184]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SfxLabel" type="Label" parent="VolumeLayer/VolumeGrid" unique_id=1118965502]
+layout_mode = 2
+text = "Lydeffekter"
+
+[node name="SfxSlider" type="HSlider" parent="VolumeLayer/VolumeGrid" unique_id=1473058035]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="LoginLayer" type="CanvasLayer" parent="." unique_id=1930571164]
+
+[node name="LoginStatusLabel" type="Label" parent="LoginLayer" unique_id=587210436]
+unique_name_in_owner = true
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 216.0
+offset_bottom = 39.0
+text = "Ikke logget ind"
+label_settings = SubResource("LabelSettings_npppq")

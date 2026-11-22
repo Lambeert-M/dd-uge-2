@@ -2,6 +2,7 @@ extends Node2D
 
 # Default pay, that can be deviated from
 const MAXPAYMENT = 20
+const EXACT_TOLERANCE := 0.005 # under en halv øre fra det rigtige svar tæller som præcis
 const CALCULATOR_SCENE := preload("res://Addons/Calculator/Resources/scenes/calculator.tscn")
 const RULEBOOK := preload("res://Scenes&Scripts/InteractiveScenes/rulebook.tscn")
 const WELCOME_LETTER := "res://Resources/Letters/welcome_letter.txt"
@@ -242,15 +243,24 @@ func _on_customer_board_received(_board: Board = null) -> void:
 
 func get_payout() -> void:
 	if not current_paper: return
-	var actual_payment = current_paper.get_correct_total()
-	var d_payment = abs(actual_payment - payment_guess)
-	
-	# This distributes the pay according to d_payment via. a Gauss curve
-	# If d_payment == 0, it returns MAXPAY * 1
-	# If d_payment == actual_payment * 0.1, it returns 0
-	# If d_payment >= actual_payment * 0.1, it asymptotically returns MAXPAY * (-1)
-	var payout = (2 * pow(1.0/2, pow(d_payment/(actual_payment * 0.1), 2)) - 1) * MAXPAYMENT
-	if d_payment == 0: payout *= 1.25
+	var actual_payment: float = current_paper.get_correct_total()
+	var d_payment := absf(actual_payment - payment_guess)
+
+	var payout: float
+	# Præcis rigtigt giver bonus. Sammenlign med en tolerance, ikke == 0: et korrekt
+	# indtastet svar kan afvige med fx 0.00000000006 pga. afrunding af kommatal.
+	# Tjekkes først, så formlen nedenfor aldrig regner 0 / 0 (= NaN), når svaret er 0 kr.
+	if d_payment < EXACT_TOLERANCE:
+		payout = MAXPAYMENT * 1.25
+	# Der skulle ikke betales noget, men spilleren skrev et beløb
+	elif actual_payment == 0.0:
+		payout = -MAXPAYMENT
+	else:
+		# This distributes the pay according to d_payment via. a Gauss curve
+		# If d_payment == 0, it returns MAXPAY * 1
+		# If d_payment == actual_payment * 0.1, it returns 0
+		# If d_payment >= actual_payment * 0.1, it asymptotically returns MAXPAY * (-1)
+		payout = (2 * pow(1.0/2, pow(d_payment/(actual_payment * 0.1), 2)) - 1) * MAXPAYMENT
 	sprint_money += payout
 	
 	AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/money.mp3")

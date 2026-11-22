@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://ud74pgyst3jy"]
+
+[ext_resource type="Script" uid="uid://crfmuquw0edrr" path="res://Scenes&Scripts/InteractiveScenes/login.gd" id="1_login"]
+
+[node name="Login" type="Control" unique_id=543121674]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_login")
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1720438211]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=903184562]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="GridContainer" type="GridContainer" parent="CenterContainer/VBoxContainer" unique_id=1388205917]
+layout_mode = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 12
+columns = 2
+
+[node name="UsernameLabel" type="Label" parent="CenterContainer/VBoxContainer/GridContainer" unique_id=412977053]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Brugernavn"
+
+[node name="UsernameField" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainer" unique_id=1594830276]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+
+[node name="PasswordLabel" type="Label" parent="CenterContainer/VBoxContainer/GridContainer" unique_id=2017364458]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Adgangskode"
+
+[node name="PasswordField" type="LineEdit" parent="CenterContainer/VBoxContainer/GridContainer" unique_id=761529903]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+secret = true
+
+[node name="LoginButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1256640187]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Log ind"
+
+[node name="RegisterButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1460283915]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Registrer bruger"
+
+[node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=338107629]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1873309145]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Tilbage"

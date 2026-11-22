@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cfbtgjai2e37t"]
+
+[ext_resource type="Script" uid="uid://djyy8biwvl6pv" path="res://Scenes&Scripts/DBConnect.gd" id="1_dt651"]
+
+[node name="TestDatabase" type="Node2D" unique_id=827429302]
+script = ExtResource("1_dt651")

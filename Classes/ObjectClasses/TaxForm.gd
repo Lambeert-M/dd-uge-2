@@ -15,6 +15,7 @@ extends Board
 	
 # FONT_SIZE, TITLE_FONT_SIZE og _make_label() arves fra Board.
 const AM_RATE := 0.08 # AM-bidrag er 8 % ved lov
+const ANSWER_CHARS := "0123456789,." # De eneste tegn, spilleren kan skrive i svarfeltet
 
 # Progressive skatter 2026: årlig grænse (efter AM-bidrag) og ekstra sats.
 # Den ekstra sats gælder kun for den del af indkomsten, der ligger over grænsen.
@@ -53,9 +54,28 @@ func _build_ui() -> void:
 	_add_fields(box)
 
 	answer_field = LineEdit.new()
-	answer_field.placeholder_text = "0000,00kr"
+	answer_field.placeholder_text = "0000,00"
 	answer_field.add_theme_font_size_override("font_size", FONT_SIZE)
+	answer_field.text_changed.connect(_on_answer_changed)
 	box.add_child(answer_field)
+
+# Fjern alt andet end cifre, komma og punktum, mens spilleren skriver (også ved indsæt).
+func _on_answer_changed(new_text: String) -> void:
+	var clean := _only_amount_chars(new_text)
+	if clean == new_text:
+		return
+	# Behold markørens plads: tæl de gyldige tegn til venstre for den
+	var caret := _only_amount_chars(new_text.left(answer_field.caret_column)).length()
+	answer_field.text = clean # udløser ikke text_changed igen
+	answer_field.caret_column = caret
+
+# Behold kun de tegn, der må stå i et beløb (se ANSWER_CHARS)
+static func _only_amount_chars(text: String) -> String:
+	var out := ""
+	for c in text:
+		if c in ANSWER_CHARS:
+			out += c
+	return out
 
 # Ekstra skat oven i trækprocenten (mellem-, top- og toptopskat).
 # grundlag = indkomst efter AM-bidrag, men FØR fradrag. Hovedkort-fradraget
@@ -71,6 +91,9 @@ static func _progressive_tax(grundlag: float, periods: int = 12) -> float:
 
 # Formatér beløb på dansk, fx 30.000,00 kr
 static func _kr(value: float) -> String:
+	if not is_finite(value): # NaN/INF har intet decimalpunktum -> parts[1] findes ikke
+		push_error("_kr fik et ugyldigt beløb: %s" % value)
+		return "??? kr"
 	var parts := ("%.2f" % absf(value)).split(".")
 	var whole := parts[0]
 	var out := ""
@@ -80,10 +103,15 @@ static func _kr(value: float) -> String:
 	out = whole + out
 	return ("-" if value < 0 else "") + out + "," + parts[1] + " kr"
 
-# Læs et beløb skrevet på dansk (fx "30.000,50") som tal. Ugyldigt input giver 0.
+# Læs et beløb som tal. Komma er altid decimaltegn (dansk: 30.000,50).
+# Uden komma er punktum tusindtalsseparator, hvis der står præcis 3 cifre efter det
+# (30.000) eller der er flere punktummer (1.234.567). Ellers er det et decimaltegn (30.5).
+# Ugyldigt input giver 0.
 static func _parse_kr(text: String) -> float:
 	text = text.strip_edges().replace(" ", "")
 	if text.contains(","):
 		text = text.replace(".", "").replace(",", ".")
+	elif text.count(".") > 1 or text.get_slice(".", 1).length() == 3:
+		text = text.replace(".", "")
 	return text.to_float() if text.is_valid_float() else 0.0
 	

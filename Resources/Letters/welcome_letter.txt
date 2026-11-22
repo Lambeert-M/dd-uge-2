@@ -3,9 +3,19 @@ Velkommen til Skattekontoret
 
 [LEFT]
 Kære nye medarbejder,
-Dette er en pladsholder-tekst. Skriv hele brevet her under [LEFT].
-Hver linje i filen bliver til sit eget afsnit på siden.
+Du skat hjælpe folk med at beregne deres skat.
+ 
+De giver dig et papir med info, som du skal omregne til skat.
+ 
+Kig i bogen for at læse mere om specifikke skatter.
+ 
 Ring med klokken, når du er klar til den første kunde.
+ 
+Når du har udfyldt blanketten, skal du drag-og-drop den til kunden.
+
+Hvis du ikke gør dit arbejde ordentligt,
+så kommer "The firing squad" og fyrer dig.
+
 Med venlig hilsen, Chefen
 
 [RIGHT]
