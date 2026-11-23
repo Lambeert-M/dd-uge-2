@@ -18,7 +18,7 @@ var can_interact := false
 
 func _ready() -> void:	
 	add_to_group("customers")
-	text_bubble_dots_resource = load("res://Resources/Customers/!CustomerResources/speech-bubble-dots.webp")
+	text_bubble_dots_resource = load("res://Resources/Customers/!CustomerResources/text_bubble.png")
 	text_bubble_dots = Sprite2D.new()
 	text_bubble_dots.hide()
 
@@ -55,11 +55,11 @@ func speak() -> void:
 		return
 	Tweens.bob(self)
 	text_bubble_dots.hide()
-	var section := customer_data.read_section("[DIALOGUE]")
-	if section.is_empty():
+	var variants := customer_data.read_variants("[DIALOGUE]")
+	if variants.is_empty():
 		return
 	has_spoken = true
-	DialogueBox.start(name, section)
+	DialogueBox.start(name, variants[randi() % variants.size()])
 	DialogueBox.closed.connect(_on_dialogue_closed, CONNECT_ONE_SHOT)
 
 func _on_dialogue_closed() -> void:

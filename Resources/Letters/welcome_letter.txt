@@ -2,10 +2,15 @@
 Velkommen til Skattekontoret
 
 [LEFT]
-Kære nye medarbejder,
-Du skat hjælpe folk med at beregne deres skat.
+Kære nye medarbejder. VVelkommen til jobbet
+
+Du fik jo lige det her job på nød og neppe, da vi har brug for de ypperste indenfor skattetjenesten. Vi forventer store ting af dig.
+
+Vi accepterer ikke middelmådighed!
+
+Dit job er at hjælpe folk med at beregne deres skat.
  
-De giver dig et papir med info, som du skal omregne til skat.
+De giver dig et papir med deres information. Du skal bestemme, hvor meget de skal betale i skat
  
 Kig i bogen for at læse mere om specifikke skatter.
  
@@ -13,8 +18,7 @@ Ring med klokken, når du er klar til den første kunde.
  
 Når du har udfyldt blanketten, skal du drag-og-drop den til kunden.
 
-Hvis du ikke gør dit arbejde ordentligt,
-så kommer "The firing squad" og fyrer dig.
+Hvis du ikke gør dit arbejde ordentligt, så sig gerne farvel til dine kære
 
 Med venlig hilsen, Chefen
 

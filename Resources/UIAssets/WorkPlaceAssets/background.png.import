@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4uhrwtl44lqn"
-path="res://.godot/imported/sider2.png-82e6060ffaadf0b64f3d7d1b2091fad1.ctex"
+uid="uid://bj1qpjbes0mcx"
+path="res://.godot/imported/background.png-363487aebaa521604d4342b6c4d20827.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/UIAssets/sider2.png"
-dest_files=["res://.godot/imported/sider2.png-82e6060ffaadf0b64f3d7d1b2091fad1.ctex"]
+source_file="res://Resources/UIAssets/WorkPlaceAssets/background.png"
+dest_files=["res://.godot/imported/background.png-363487aebaa521604d4342b6c4d20827.ctex"]
 
 [params]
 

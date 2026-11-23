@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://jgva0pjpv0ps"]
 
 [ext_resource type="Script" uid="uid://c0bqu5ms71foe" path="res://Scenes&Scripts/GameObjects/desk/desk.gd" id="1_hicrt"]
-[ext_resource type="Texture2D" uid="uid://brq1481fdqylt" path="res://Resources/UIAssets/Alien.png" id="2_cn7bp"]
+[ext_resource type="Texture2D" uid="uid://cytb4srms6b7u" path="res://Resources/UIAssets/WorkPlaceAssets/table.png" id="2_hicrt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_54cwd"]
 size = Vector2(506, 186)
@@ -12,7 +12,8 @@ script = ExtResource("1_hicrt")
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=489386418]
 position = Vector2(-5.0000114, 20.000008)
 scale = Vector2(1.3493333, 0.5705522)
-texture = ExtResource("2_cn7bp")
+texture = ExtResource("2_hicrt")
+centered = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1783923406]
 position = Vector2(-5, 20)

@@ -15,7 +15,7 @@ const PROGRESS_TABLE := "Progress"
 signal progress_saved
 
 @onready var desk := $Desk
-@onready var quota_label := $PopupLabel
+@onready var popup_label := $PopupLabel
 @onready var sprint_label := $SprintLabel
 @onready var sprint_money_label := $SprintMoneyLabel
 @onready var money_popup_label := $MoneyPopupLabel
@@ -29,6 +29,7 @@ signal progress_saved
 # For layout setup:
 @onready var left_wall := $Frame/LeftWall
 @onready var right_wall := $Frame/RightWall
+@onready var bg := $BackGroundSprite
 
 var current_customer: Customer
 var is_serving := false
@@ -41,7 +42,9 @@ var quotas_served := 0
 var served_during_sprint := 0
 var sprint_size := 3
 var first_sprint_size := 3
-var sprint_money := 0.00
+var sprint_money := 0.00:
+	set(m):
+		sprint_money_label.text = TaxForm._kr(m)
 
 # Gem/hent fremskridt
 var is_loading_progress := false # ingen kunder, mens fremskridtet hentes
@@ -126,8 +129,15 @@ func setup_layout() -> void:
 
 	left_wall.position = Vector2.ZERO
 	right_wall.position = Vector2(viewport_size.x - wall_size.x, 0)
+	
+	set_sprite_size(bg, get_viewport_rect().size)
+	bg.position = Vector2.ZERO
+	
+	var desk_top := viewport_size.y * 0.72
+	desk.set_rect(
+		Vector2(wall_size.x, desk_top),
+		Vector2(viewport_size.x - 2.0 * wall_size.x, viewport_size.y - desk_top))
 
-	sprint_money_label.text = TaxForm._kr(sprint_money)
 	sprint_money_label.position = Vector2(right_wall.position.x + 20, 20)
 	update_sprint_label()
 	sprint_label.position = sprint_money_label.position + Vector2(0, sprint_money_label.size.y - 30)
@@ -186,18 +196,17 @@ func finish_sprint() -> void:
 
 func complete_quota() -> void:
 	# Quota animation
-	quota_label.text = "Quota reached!"
-	quota_label.scale = Vector2.ONE
-	quota_label.show()
-	Tweens.wobble(quota_label)
+	popup_label.text = "Kvote opnået!"
+	popup_label.scale = Vector2.ONE
+	popup_label.show()
+	Tweens.wobble(popup_label)
 	save_money()
 	# Gem med det samme, så intet går tabt, hvis spillet lukkes under animationen
 	quotas_served += 1
 	save_user_progess()
 	await get_tree().create_timer(2).timeout
 	var tween := get_tree().create_tween()
-	tween.tween_property(quota_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
-	
+	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
 	quota_label.hide()
@@ -213,7 +222,8 @@ func save_money() -> void:
 	print(Global.savings)
 
 	# Animation
-	money_popup_label.text = "+%s" % surplus
+	money_popup_label.text = "+%s til din opsparing" % surplus
+	sprint_money = 0
 	show_earned_money()
 
 func show_earned_money() -> void:
@@ -316,7 +326,6 @@ func _on_customer_finished_speaking() -> void:
 	desk.place_board(current_paper)
 
 func _on_customer_board_received(_board: Board = null) -> void:
-	print("Paper given")
 	payment_guess = TaxForm._parse_kr(current_paper.answer_field.text)
 	get_payout()
 	remove_paper()
@@ -345,7 +354,6 @@ func get_payout() -> void:
 	sprint_money += payout
 	
 	AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/money.mp3")
-	sprint_money_label.text = TaxForm._kr(sprint_money)
 	Tweens.wobble(sprint_money_label)
 	
 	if payout >= 0:
