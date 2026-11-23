@@ -134,7 +134,7 @@ func finish_sprint() -> void:
 
 func complete_quota() -> void:
 	# Quota animation
-	popup_label.text = "Quota reached!"
+	popup_label.text = "Kvote opnået!"
 	popup_label.scale = Vector2.ONE
 	popup_label.show()
 	Tweens.wobble(popup_label)
@@ -184,12 +184,12 @@ func start_new_sprint() -> void:
 	sprint_size += 1
 	sprint_quota = snappedf(get_sprint_quota(sprint_size), 0.01)
 	served_during_sprint = 0
-	sprint_label.text = "%s/%s customers served. Quota: %s" \
+	sprint_label.text = "%s/%s kunder tjenkt. Kvote: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
 
 func game_over() -> void:
 	Global.game_over = true
-	popup_label.text = "You didn't reach the quota!?"
+	popup_label.text = "Du nåede ikke kvotaet?!"
 	popup_label.show()
 	Tweens.wobble(popup_label)
 	
