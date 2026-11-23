@@ -44,7 +44,9 @@ var sprint_size := 3
 var first_sprint_size := 3
 var sprint_money := 0.00:
 	set(m):
-		sprint_money_label.text = TaxForm._kr(m)
+		sprint_money = m
+		if(sprint_money_label):
+			sprint_money_label.text = TaxForm._kr(m)
 
 # Gem/hent fremskridt
 var is_loading_progress := false # ingen kunder, mens fremskridtet hentes
@@ -209,8 +211,8 @@ func complete_quota() -> void:
 	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
-	quota_label.hide()
-
+	popup_label.hide()
+	
 	start_new_sprint()
 
 # Det, der er tilbage efter kvoten, lægges i opsparingen, og sprintens penge starter forfra
@@ -267,9 +269,9 @@ func game_over() -> void:
 	quotas_served = 0
 	Global.savings = 0.0
 	save_user_progess()
-	quota_label.text = "You didn't reach the quota!?"
-	quota_label.show()
-	Tweens.wobble(quota_label)
+	popup_label.text = "You didn't reach the quota!?"
+	popup_label.show()
+	Tweens.wobble(popup_label)
 	
 	move_child(game_over_screen, -1)
 	game_over_label.text = "You're fired"
@@ -358,10 +360,10 @@ func get_payout() -> void:
 	
 	if payout >= 0:
 		money_popup_label.text = "+%s kr" % payout
-		set("theme_override_colors/font_color", Color.hex(0x40d85a))
+		money_popup_label.add_theme_color_override("font_color", Color.html("#40d85a"))
 	else:
 		money_popup_label.text = "%s kr" % payout
-		set("theme_override_colors/font_color", Color.hex(0xfe0023))
+		money_popup_label.add_theme_color_override("font_color", Color.html("#fe0023"))
 	show_earned_money()
 
 func spawn_calculator() -> void:
