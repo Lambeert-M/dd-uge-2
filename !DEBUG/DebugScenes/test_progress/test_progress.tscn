@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://!DEBUG/DebugScenes/test_progress/test_progress.gd" id="1_progress"]
+
+[node name="TestProgress" type="Node" unique_id=1093847262]
+script = ExtResource("1_progress")

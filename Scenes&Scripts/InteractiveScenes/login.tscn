@@ -2,6 +2,9 @@
 
 [ext_resource type="Script" uid="uid://crfmuquw0edrr" path="res://Scenes&Scripts/InteractiveScenes/login.gd" id="1_login"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_yyq1l"]
+font_size = 14
+
 [node name="Login" type="Control" unique_id=543121674]
 layout_mode = 3
 anchors_preset = 15
@@ -76,3 +79,13 @@ layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 20
 text = "Tilbage"
+
+[node name="WarningLabel" type="Label" parent="." unique_id=1988328343]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 620.0
+offset_right = 438.0
+offset_bottom = 640.0
+theme_override_font_sizes/font_size = 28
+text = "Din data er ikke sikret med RLS; Brug ikke et vigtigt til login her!"
+label_settings = SubResource("LabelSettings_yyq1l")

@@ -36,6 +36,7 @@ func _ready() -> void:
 
 # Fjern alt andet end bogstaver og tal, mens spilleren skriver (også ved indsæt).
 # Samme fremgangsmåde som TaxForm._on_answer_changed().
+# Undgå injections ift brugernavn
 func _on_username_changed(new_text: String) -> void:
 	var clean := _only_username_chars(new_text)
 	if clean == new_text:

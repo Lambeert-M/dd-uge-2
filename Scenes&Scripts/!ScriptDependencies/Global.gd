@@ -18,5 +18,7 @@ func _ready() -> void:
 
 func is_logged_in() -> bool:
 	return not current_user.is_empty()
-	
-var money := 0.00
+
+# De penge, spilleren har sparet op: det, der var tilbage efter kvoten i hver klaret sprint.
+# For en bruger, der er logget ind, gemmes de i databasen (tabellen Progress, se work_place.gd).
+var savings := 0.00

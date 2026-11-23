@@ -8,6 +8,11 @@ const RULEBOOK := preload("res://Scenes&Scripts/InteractiveScenes/rulebook.tscn"
 const WELCOME_LETTER := "res://Resources/Letters/welcome_letter.txt"
 const FIRST_SPRINT_QUOTA := 40.00
 const RAMP := 1.0
+# Tabellen i Supabase med én række pr. bruger: user_id, sprints_completed, savings
+const PROGRESS_TABLE := "Progress"
+
+# Udsendes, når save_user_progess() er færdig (også hvis det fejlede)
+signal progress_saved
 
 @onready var desk := $Desk
 @onready var popup_label := $PopupLabel
@@ -41,13 +46,72 @@ var sprint_money := 0.00:
 	set(m):
 		sprint_money_label.text = TaxForm._kr(m)
 
+# Gem/hent fremskridt
+var is_loading_progress := false # ingen kunder, mens fremskridtet hentes
+var has_loaded_progress := false # der gemmes kun, hvis fremskridtet blev hentet
+var is_saving := false
+
 
 func _ready() -> void:
 	setup_paper_types()
 	setup_layout()
 	setup_desk()
-	
 	Global.game_over = false
+	# Loggede ind users får penge
+	if Global.is_logged_in():
+		load_user_progess()
+	else:
+		print("User is not logged in")
+
+# Henter brugerens klarede sprints og opsparing og starter den sprint, de er nået til.
+func load_user_progess() -> void:
+	is_loading_progress = true
+	var query := SupabaseQuery.new().from(PROGRESS_TABLE) \
+		.select(PackedStringArray(["sprints_completed", "savings"])) \
+		.eq("user_id", str(_user_id()))
+	var task = await Supabase.database.query(query).completed
+
+	# Netværksfejl giver data == null uden en error, så tjek begge.
+	# Uden hentet fremskridt gemmes der ikke, ellers ville en ny sprint 1
+	# overskrive det rigtige fremskridt i databasen.
+	if task.error != null or not task.data is Array:
+		push_warning("Kunne ikke hente fremskridt: dette spil bliver ikke gemt")
+		is_loading_progress = false
+		return
+
+	# Ingen række endnu = ny spiller, som starter fra 0
+	if task.data.is_empty():
+		quotas_served = 0
+		Global.savings = 0.0
+	else:
+		quotas_served = int(task.data[0]["sprints_completed"])
+		Global.savings = float(task.data[0]["savings"])
+	_setup_sprint(quotas_served)
+	has_loaded_progress = true
+	is_loading_progress = false
+
+# Skriver klarede sprints og opsparing til databasen. Kaldes kun, når en sprint er slut:
+# complete_quota() og game_over() sætter værdierne først.
+func save_user_progess() -> void:
+	if not Global.is_logged_in() or not has_loaded_progress:
+		return
+	is_saving = true
+	# upsert: opretter rækken første gang, ellers overskrives den
+	var query := SupabaseQuery.new().from(PROGRESS_TABLE).insert([{
+		"user_id": _user_id(),
+		"sprints_completed": quotas_served,
+		"savings": snappedf(Global.savings, 0.01),
+	}], true)
+	var task = await Supabase.database.query(query).completed
+	if task.error != null or not task.data is Array:
+		push_warning("Kunne ikke gemme fremskridt: %s" % [task.error])
+	is_saving = false
+	progress_saved.emit()
+
+# JSON-tal bliver til float, og str(1.0) == "1.0", som databasen ikke godtager som bigint
+func _user_id() -> int:
+	return int(Global.current_user["id"])
+
 
 func setup_paper_types() -> void:
 	paper_types.add(A_Indkomst, 2.0)
@@ -75,8 +139,7 @@ func setup_layout() -> void:
 		Vector2(viewport_size.x - 2.0 * wall_size.x, viewport_size.y - desk_top))
 
 	sprint_money_label.position = Vector2(right_wall.position.x + 20, 20)
-	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
-		% [served_during_sprint, sprint_size, sprint_quota]
+	update_sprint_label()
 	sprint_label.position = sprint_money_label.position + Vector2(0, sprint_money_label.size.y - 30)
 
 func setup_desk() -> void:
@@ -88,7 +151,7 @@ func setup_desk() -> void:
 	desk.place_board(Letter.new(WELCOME_LETTER), Vector2(0, 30))
 
 func customer_arrive() -> void:
-	if current_customer:
+	if current_customer or is_loading_progress:
 		return
 	is_serving = true
 	current_customer = Customer.new(Customer.get_random_customer_name())
@@ -113,9 +176,8 @@ func customer_leave() -> void:
 		return
 	is_serving = false
 	served_during_sprint += 1
-	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
-		% [served_during_sprint, sprint_size, sprint_quota]
-	
+	update_sprint_label()
+
 	#Tween the customer out
 	var tween = get_tree().create_tween()
 	tween.tween_property(current_customer, "position", Vector2(get_viewport_rect().size/2 + Vector2(400,0)), 1).set_trans(Tween.TRANS_SINE)
@@ -139,22 +201,26 @@ func complete_quota() -> void:
 	popup_label.show()
 	Tweens.wobble(popup_label)
 	save_money()
+	# Gem med det samme, så intet går tabt, hvis spillet lukkes under animationen
+	quotas_served += 1
+	save_user_progess()
 	await get_tree().create_timer(2).timeout
 	var tween := get_tree().create_tween()
 	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
-	popup_label.hide()
-	
-	quotas_served += 1
+	quota_label.hide()
+
 	start_new_sprint()
 
+# Det, der er tilbage efter kvoten, lægges i opsparingen, og sprintens penge starter forfra
 func save_money() -> void:
 	var surplus = sprint_money - sprint_quota
-	Global.money += surplus
+	Global.savings += surplus
 	sprint_money = 0.00
-	print(Global.money)
-	
+	sprint_money_label.text = TaxForm._kr(sprint_money)
+	print(Global.savings)
+
 	# Animation
 	money_popup_label.text = "+%s til din opsparing" % surplus
 	sprint_money = 0
@@ -181,17 +247,29 @@ func get_sprint_quota(n: int) -> float:
 	return FIRST_SPRINT_QUOTA + slope * (n - n0) * (1.0 - n0 / n)
 
 func start_new_sprint() -> void:
-	sprint_size += 1
+	_setup_sprint(quotas_served)
+
+# Sprintens længde og kvote regnes ud fra, hvor mange sprints der er klaret.
+# get_sprint_quota(first_sprint_size) == FIRST_SPRINT_QUOTA, så 0 klarede giver den første sprint.
+func _setup_sprint(sprints_completed: int) -> void:
+	sprint_size = first_sprint_size + sprints_completed
 	sprint_quota = snappedf(get_sprint_quota(sprint_size), 0.01)
 	served_during_sprint = 0
-	sprint_label.text = "%s/%s kunder tjenkt. Kvote: %s" \
+	update_sprint_label()
+
+func update_sprint_label() -> void:
+	sprint_label.text = "%s/%s customers served. Quota: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
 
 func game_over() -> void:
 	Global.game_over = true
-	popup_label.text = "Du nåede ikke kvotaet?!"
-	popup_label.show()
-	Tweens.wobble(popup_label)
+	# Fyret: alt fremskridt nulstilles. Gemmes, mens animationen kører.
+	quotas_served = 0
+	Global.savings = 0.0
+	save_user_progess()
+	quota_label.text = "You didn't reach the quota!?"
+	quota_label.show()
+	Tweens.wobble(quota_label)
 	
 	move_child(game_over_screen, -1)
 	game_over_label.text = "You're fired"
@@ -223,6 +301,9 @@ func game_over() -> void:
 		func(): AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/GameOverScreenFallHit.mp3"))
 	
 	await bounce.finished
+	# "Retry" genindlæser scenen og henter fremskridtet, så nulstillingen skal være gemt først
+	if is_saving:
+		await progress_saved
 	retry_button.disabled = false
 
 func remove_customer() -> void:
@@ -300,7 +381,7 @@ func set_sprite_size(sprite: Sprite2D, target_size: Vector2) -> void:
 # Test function
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("Test"):
-		complete_quota()
+		#complete_quota()
 		if not current_paper: return
 		get_viewport().set_input_as_handled() # Skriv ikke "å" i svarfeltet
 		print("%s: korrekt %s, svar \"%s\", forskel %s" % [
