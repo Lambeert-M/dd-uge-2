@@ -5,7 +5,7 @@ const SPRITE_PATH := "res://Resources/Sprites/GameObjectSprites/TaxFormSprites/t
 const ICON_PATH := "res://Resources/Sprites/GameObjectSprites/TaxFormSprites/tax_paper_test.jpg"
 
 # Liste med firmanavne (ét pr. linje under [COMPANIES])
-const COMPANIES_PATH := "res://Resources/UIAssets/stock_companies.txt"
+const COMPANIES_PATH := "res://Resources/AssetData/stock_companies.txt"
 
 const TRADE_COUNT := 3      # antal aktiehandler på blanketten
 const LOSS_CHANCE := 0.25   # chance for, at en handel giver tab i stedet for gevinst

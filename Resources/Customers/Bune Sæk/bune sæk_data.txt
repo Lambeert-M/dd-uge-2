@@ -1,8 +1,13 @@
 [DIALOGUE]
+[1]
 Sig ikke til nogen, at du har set mig
 Jeg er her på et personligt ærrinde, der ikke går skolen ved
 Jeg har et lille sidejob, hvor pengene lige skal ordnes
 Der sker ikke noget, hvis der går lidt penge tabt, men det har jeg ikke sagt
+
+[2]
+Test
+Haha
 
 [GREETINGS]
 Goddavs

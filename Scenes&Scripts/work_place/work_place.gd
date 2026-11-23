@@ -74,7 +74,7 @@ func setup_layout() -> void:
 
 	sprint_money_label.text = TaxForm._kr(sprint_money)
 	sprint_money_label.position = Vector2(right_wall.position.x + 20, 20)
-	sprint_label.text = "%s/%s customers served. Quota: %s" \
+	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
 	sprint_label.position = sprint_money_label.position + Vector2(0, sprint_money_label.size.y - 30)
 
@@ -155,7 +155,7 @@ func save_money() -> void:
 	print(Global.money)
 	
 	# Animation
-	money_popup_label.text = "+%s" % surplus
+	money_popup_label.text = "+%s til din opsparing" % surplus
 	show_earned_money()
 
 func show_earned_money() -> void:
@@ -243,7 +243,6 @@ func _on_customer_finished_speaking() -> void:
 	desk.place_board(current_paper)
 
 func _on_customer_board_received(_board: Board = null) -> void:
-	print("Paper given")
 	payment_guess = TaxForm._parse_kr(current_paper.answer_field.text)
 	get_payout()
 	remove_paper()
@@ -300,7 +299,7 @@ func set_sprite_size(sprite: Sprite2D, target_size: Vector2) -> void:
 # Test function
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("Test"):
-		complete_quota()
+		save_money()
 		if not current_paper: return
 		get_viewport().set_input_as_handled() # Skriv ikke "å" i svarfeltet
 		print("%s: korrekt %s, svar \"%s\", forskel %s" % [
