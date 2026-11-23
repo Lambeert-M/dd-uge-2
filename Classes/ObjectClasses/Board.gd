@@ -297,3 +297,12 @@ func _is_point_over_desk(point: Vector2) -> bool:
 		if desk.get_global_rect().has_point(point):
 			return true
 	return false
+
+func _on_placed_off_screen() -> void:
+	var off_side: Vector2i
+	off_side = get_viewport().size - position
+	var closest_point: Vector2
+	
+	
+	position = lerp(position, closest_point, 1)
+	pass

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bwikx6f55bkpf"]
 
 [ext_resource type="Script" uid="uid://bgsc6go5r4nep" path="res://Scenes&Scripts/work_place/work_place.gd" id="1_nsi5y"]
+[ext_resource type="Texture2D" uid="uid://bj1qpjbes0mcx" path="res://Resources/UIAssets/WorkPlaceAssets/background.png" id="2_hp6sl"]
 [ext_resource type="PackedScene" uid="uid://jgva0pjpv0ps" path="res://Scenes&Scripts/GameObjects/desk/desk.tscn" id="2_tug3r"]
 [ext_resource type="Texture2D" uid="uid://catdmr57c2l5c" path="res://Resources/Sprites/GameObjectSprites/bell.png" id="3_tug3r"]
 [ext_resource type="Script" uid="uid://c4j6svabuvf70" path="res://Scenes&Scripts/GameObjects/bell/bell.gd" id="3_xrtsr"]
@@ -11,6 +12,10 @@
 script = ExtResource("1_nsi5y")
 
 [node name="BackGroundSprite" type="Sprite2D" parent="." unique_id=124227825]
+position = Vector2(5, 3.0000305)
+scale = Vector2(6.033854, 6)
+texture = ExtResource("2_hp6sl")
+centered = false
 
 [node name="Desk" parent="." unique_id=130957007 instance=ExtResource("2_tug3r")]
 position = Vector2(571, 543)
@@ -53,6 +58,7 @@ text = "0 kr"
 
 [node name="MoneyPopupLabel" type="Label" parent="." unique_id=1977316702]
 visible = false
+custom_maximum_size = Vector2(300, -1)
 offset_left = 832.0
 offset_top = 9.0
 offset_right = 923.0
@@ -62,6 +68,7 @@ theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 1
 theme_override_font_sizes/font_size = 45
 text = "Test"
+autowrap_mode = 3
 
 [node name="PopupLabel" type="Label" parent="." unique_id=851899107]
 visible = false
@@ -70,6 +77,8 @@ offset_left = 343.0
 offset_top = 55.0
 offset_right = 789.0
 offset_bottom = 274.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 55
 text = "Test"
 horizontal_alignment = 1
