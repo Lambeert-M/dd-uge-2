@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="DDUge2Game"
-run/main_scene="uid://cxftbpdnvtbgb"
+run/main_scene="uid://c68ilnrn3gf8y"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="uid://brq1481fdqylt"
 

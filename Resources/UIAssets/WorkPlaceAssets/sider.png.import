@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1wn0csx7slji"
-path="res://.godot/imported/sider.png-0fce8364e710e96a2da2a89e2e8bb14b.ctex"
+path="res://.godot/imported/sider.png-a17c2422333c7fea96a4589a3d224f86.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Resources/UIAssets/sider.png"
-dest_files=["res://.godot/imported/sider.png-0fce8364e710e96a2da2a89e2e8bb14b.ctex"]
+source_file="res://Resources/UIAssets/WorkPlaceAssets/sider.png"
+dest_files=["res://.godot/imported/sider.png-a17c2422333c7fea96a4589a3d224f86.ctex"]
 
 [params]
 

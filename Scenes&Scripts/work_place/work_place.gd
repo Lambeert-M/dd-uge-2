@@ -24,6 +24,7 @@ const RAMP := 1.0
 # For layout setup:
 @onready var left_wall := $Frame/LeftWall
 @onready var right_wall := $Frame/RightWall
+@onready var bg := $BackGroundSprite
 
 var current_customer: Customer
 var is_serving := false
@@ -62,6 +63,14 @@ func setup_layout() -> void:
 
 	left_wall.position = Vector2.ZERO
 	right_wall.position = Vector2(viewport_size.x - wall_size.x, 0)
+	
+	set_sprite_size(bg, get_viewport_rect().size)
+	bg.position = Vector2.ZERO
+	
+	var desk_top := viewport_size.y * 0.72
+	desk.set_rect(
+		Vector2(wall_size.x, desk_top),
+		Vector2(viewport_size.x - 2.0 * wall_size.x, viewport_size.y - desk_top))
 
 	sprint_money_label.text = TaxForm._kr(sprint_money)
 	sprint_money_label.position = Vector2(right_wall.position.x + 20, 20)
@@ -132,7 +141,6 @@ func complete_quota() -> void:
 	await get_tree().create_timer(2).timeout
 	var tween := get_tree().create_tween()
 	tween.tween_property(quota_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
-	
 	
 	await tween.finished
 	quota_label.hide()

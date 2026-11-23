@@ -18,7 +18,7 @@ var can_interact := false
 
 func _ready() -> void:	
 	add_to_group("customers")
-	text_bubble_dots_resource = load("res://Resources/Customers/!CustomerResources/speech-bubble-dots.webp")
+	text_bubble_dots_resource = load("res://Resources/Customers/!CustomerResources/text_bubble.png")
 	text_bubble_dots = Sprite2D.new()
 	text_bubble_dots.hide()
 
