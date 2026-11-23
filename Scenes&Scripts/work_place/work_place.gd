@@ -10,7 +10,7 @@ const FIRST_SPRINT_QUOTA := 40.00
 const RAMP := 1.0
 
 @onready var desk := $Desk
-@onready var quota_label := $PopupLabel
+@onready var popup_label := $PopupLabel
 @onready var sprint_label := $SprintLabel
 @onready var sprint_money_label := $SprintMoneyLabel
 @onready var money_popup_label := $MoneyPopupLabel
@@ -37,7 +37,9 @@ var quotas_served := 0
 var served_during_sprint := 0
 var sprint_size := 3
 var first_sprint_size := 3
-var sprint_money := 0.00
+var sprint_money := 0.00:
+	set(m):
+		sprint_money_label.text = TaxForm._kr(m)
 
 
 func _ready() -> void:
@@ -72,7 +74,6 @@ func setup_layout() -> void:
 		Vector2(wall_size.x, desk_top),
 		Vector2(viewport_size.x - 2.0 * wall_size.x, viewport_size.y - desk_top))
 
-	sprint_money_label.text = TaxForm._kr(sprint_money)
 	sprint_money_label.position = Vector2(right_wall.position.x + 20, 20)
 	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
@@ -112,7 +113,7 @@ func customer_leave() -> void:
 		return
 	is_serving = false
 	served_during_sprint += 1
-	sprint_label.text = "%s/%s customers served. Quota: %s" \
+	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
 	
 	#Tween the customer out
@@ -133,17 +134,17 @@ func finish_sprint() -> void:
 
 func complete_quota() -> void:
 	# Quota animation
-	quota_label.text = "Quota reached!"
-	quota_label.scale = Vector2.ONE
-	quota_label.show()
-	Tweens.wobble(quota_label)
+	popup_label.text = "Quota reached!"
+	popup_label.scale = Vector2.ONE
+	popup_label.show()
+	Tweens.wobble(popup_label)
 	save_money()
 	await get_tree().create_timer(2).timeout
 	var tween := get_tree().create_tween()
-	tween.tween_property(quota_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
+	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
-	quota_label.hide()
+	popup_label.hide()
 	
 	quotas_served += 1
 	start_new_sprint()
@@ -156,6 +157,7 @@ func save_money() -> void:
 	
 	# Animation
 	money_popup_label.text = "+%s til din opsparing" % surplus
+	sprint_money = 0
 	show_earned_money()
 
 func show_earned_money() -> void:
@@ -187,9 +189,9 @@ func start_new_sprint() -> void:
 
 func game_over() -> void:
 	Global.game_over = true
-	quota_label.text = "You didn't reach the quota!?"
-	quota_label.show()
-	Tweens.wobble(quota_label)
+	popup_label.text = "You didn't reach the quota!?"
+	popup_label.show()
+	Tweens.wobble(popup_label)
 	
 	move_child(game_over_screen, -1)
 	game_over_label.text = "You're fired"
@@ -271,7 +273,6 @@ func get_payout() -> void:
 	sprint_money += payout
 	
 	AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/money.mp3")
-	sprint_money_label.text = TaxForm._kr(sprint_money)
 	Tweens.wobble(sprint_money_label)
 	
 	if payout >= 0:
@@ -299,7 +300,7 @@ func set_sprite_size(sprite: Sprite2D, target_size: Vector2) -> void:
 # Test function
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("Test"):
-		save_money()
+		complete_quota()
 		if not current_paper: return
 		get_viewport().set_input_as_handled() # Skriv ikke "å" i svarfeltet
 		print("%s: korrekt %s, svar \"%s\", forskel %s" % [
