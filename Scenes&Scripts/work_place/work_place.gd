@@ -44,7 +44,9 @@ var sprint_size := 3
 var first_sprint_size := 3
 var sprint_money := 0.00:
 	set(m):
-		sprint_money_label.text = TaxForm._kr(m)
+		sprint_money = m
+		if(sprint_money_label):
+			sprint_money_label.text = TaxForm._kr(m)
 
 # Gem/hent fremskridt
 var is_loading_progress := false # ingen kunder, mens fremskridtet hentes
@@ -150,6 +152,9 @@ func setup_desk() -> void:
 	# spawn velkomstbrevet: en konvolut på skrivebordet, en side når det trækkes væk
 	desk.place_board(Letter.new(WELCOME_LETTER), Vector2(0, 30))
 
+	# spawn notepapir, hvor spilleren kan skrive resultater og mellemregninger
+	desk.place_board(NotePaper.new(), Vector2(100, 30))
+
 func customer_arrive() -> void:
 	if current_customer or is_loading_progress:
 		return
@@ -209,7 +214,7 @@ func complete_quota() -> void:
 	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
-	quota_label.hide()
+	popup_label.hide()
 
 	start_new_sprint()
 
@@ -267,9 +272,9 @@ func game_over() -> void:
 	quotas_served = 0
 	Global.savings = 0.0
 	save_user_progess()
-	quota_label.text = "You didn't reach the quota!?"
-	quota_label.show()
-	Tweens.wobble(quota_label)
+	popup_label.text = "You didn't reach the quota!?"
+	popup_label.show()
+	Tweens.wobble(popup_label)
 	
 	move_child(game_over_screen, -1)
 	game_over_label.text = "You're fired"
@@ -380,6 +385,8 @@ func set_sprite_size(sprite: Sprite2D, target_size: Vector2) -> void:
 
 # Test function
 func _input(event: InputEvent) -> void:
+	# Mens der skrives i notepapiret, skal "å" skrives og ikke udløse test-genvejen
+	if get_viewport().gui_get_focus_owner() is TextEdit: return
 	if event.is_action_pressed("Test"):
 		#complete_quota()
 		if not current_paper: return
