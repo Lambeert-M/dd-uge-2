@@ -12,7 +12,7 @@ const DRAG_THRESHOLD := 6.0
 
 var clipped: Array[Board] = []
 var dragging := false
-var last_mouse := Vector2.ZERO
+var grab_offset := Vector2.ZERO      # hvor på boardet musen greb fat (fra øverste venstre hjørne)
 var sprite: Sprite2D
 var on_desk := false
 
@@ -55,6 +55,8 @@ func _ready() -> void:
 	# Hides VBox if it exists, index 2 is VBox
 	if get_children().size() == 3:
 		get_child(2).hide()
+	# Bliver vinduet mindre, kan et board ligge uden for skærmen: skub det ind igen
+	get_viewport().size_changed.connect(keep_on_screen)
 
 func _input(event: InputEvent) -> void:
 	if Global.game_over: return
@@ -65,7 +67,7 @@ func _input(event: InputEvent) -> void:
 				pressed_on_me = true
 				grabbed.emit()
 				press_start = mouse
-				last_mouse = mouse
+				grab_offset = mouse - global_position
 				# Et klik lægger boardet øverst med det samme (før GUI'en får klikket,
 				# så felter og knapper på papiret virker stadig)
 				bring_to_front()
@@ -83,7 +85,6 @@ func _input(event: InputEvent) -> void:
 			if mouse.distance_to(press_start) >= DRAG_THRESHOLD:
 				dragging = true
 				pressed_on_me = false
-				last_mouse = mouse
 				# Clipping slået fra: boards hænger ikke længere sammen.
 				# lift() tog alle boards, der lå oven på dette, med i trækket.
 				#lift()
@@ -93,11 +94,10 @@ func _input(event: InputEvent) -> void:
 				_drop()
 				return
 			var mouse := get_global_mouse_position()
-			var delta := mouse - last_mouse
-			last_mouse = mouse
-			for b in get_group():
-				b.global_position += delta
 			_update_icon_mode(mouse)
+			# Stedet, man greb fat i, følger musen, men boardet stopper ved skærmkanten.
+			# Musen kan godt forlade vinduet under et træk, så det er nødvendigt.
+			_move_to(mouse - grab_offset)
 		if dragging:
 			get_viewport().set_input_as_handled()
 
@@ -131,6 +131,31 @@ func _drop() -> void:
 # (fx fra TestBot i !DEBUG) ville ellers ikke kunne trække boards.
 func _event_position(event: InputEventMouse) -> Vector2:
 	return get_canvas_transform().affine_inverse() * event.position
+
+## Flyt boardet (og de boards, det er clippet til) til `target`, men aldrig uden for skærmen.
+func _move_to(target: Vector2) -> void:
+	var delta := target - global_position
+	for b in get_group():
+		b.global_position += delta
+	keep_on_screen()
+
+## Stikker boardet (eller dets clip-gruppe) uden for skærmen, skubbes det ind igen.
+## Er det større end skærmen, holdes øverste venstre hjørne synligt.
+func keep_on_screen() -> void:
+	if not is_inside_tree():
+		return
+	var group := get_group()
+	var rect := get_global_rect()
+	for b in group:
+		rect = rect.merge(b.get_global_rect())
+	# Det synlige område i verdens-koordinater (der er ingen Camera2D, men så virker det også med en)
+	var screen := get_canvas_transform().affine_inverse() * get_viewport_rect()
+	var max_pos := (screen.end - rect.size).max(screen.position)
+	var shift := rect.position.clamp(screen.position, max_pos) - rect.position
+	if shift == Vector2.ZERO:
+		return
+	for b in group:
+		b.global_position += shift
 
 func bring_to_front() -> void:
 	var members := get_group()
@@ -297,25 +322,15 @@ func _update_icon_mode(mouse: Vector2) -> void:
 	var over_desk := _is_point_over_desk(mouse)
 	if over_desk and not is_icon:
 		set_icon_mode(true)
-		global_position = mouse - size / 2.0     # icon centered on the cursor
 	elif not over_desk and is_icon:
 		set_icon_mode(false)
-		global_position = mouse - size / 2.0     # full board centered on the cursor
 	else:
 		return
-	last_mouse = mouse
+	# Ikonet eller den fulde side centreres på musen (det næste _move_to() flytter den derhen)
+	grab_offset = size / 2.0
 
 func _is_point_over_desk(point: Vector2) -> bool:
 	for desk in get_tree().get_nodes_in_group("desks"):
 		if desk.get_global_rect().has_point(point):
 			return true
 	return false
-
-func _on_placed_off_screen() -> void:
-	var off_side: Vector2i
-	off_side = get_viewport().size - position
-	var closest_point: Vector2
-	
-	
-	position = lerp(position, closest_point, 1)
-	pass
