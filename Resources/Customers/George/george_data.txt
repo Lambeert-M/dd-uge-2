@@ -1,7 +1,20 @@
 [DIALOGUE]
+[1]
 Dette er mit første skridt i at starte mit virksomhedsimperie fra bunden med min fars penge!
 Dog, så føler staten åbenbart, at jeg skal betale et eller andet 'skat'
 Gør det for mig, vil du ikke nok?
+
+[2]
+Jeg ved faktisk ikke rigtigt, hvorfor jeg er her
+Skat giver ikke mening, at betale, hvorfor skal jeg give så meget og få så lidt
+Du kan ligeså sige op brormand
+Hvis du svindler mig, så ringer jeg til min farmand
+
+[3]
+Har du set hende der den unge pige i køen?
+Hun er kinda lækker, men nok også kinda ude af min liga
+Kan du ikke tage lidt af mine penge, og så lægge et godt ord ind for mig?
+Så ville du være en ægte guttermand
 
 [GREETINGS]
 God dag

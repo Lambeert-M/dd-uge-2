@@ -1,8 +1,21 @@
 [DIALOGUE]
+[1]
 Min arbejdsplads er sådan et hul
 Ham chefen giver alle pengene til sin søn, Geo eller et eller andet...
 Og nu har de endda sendt mig herind til dig, adr
 Gør dit arbejde og fix mine papirer
+
+[2]
+Åhhhh, hvorfor skal man gå på arbejde bare for så bagefter at skulle dukke op her?
+Det hele er så latterligt. Hvis bare du lige kunne kigge til siden imens jeg skrev 0 på det der papir
+Det ville være dejligt...
+Pwetty pwease?
+
+[3]
+Hvordan skal jeg have råd til nyt tøj, når i snyder mig for min egne penge?!
+Må jeg tale med din chef tak?
+Eller... Ej, det tager bare endnu længere tid.
+Jeg vil gerne hjem
 
 [GREETINGS]
 ...
