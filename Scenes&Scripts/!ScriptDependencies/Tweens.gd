@@ -29,6 +29,15 @@ func bob(node: CanvasItem) -> Tween:
 	tween.tween_property(node, "position", base_pos, 0.45) \
 		.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 	return tween
+func slow_bob(node: CanvasItem) -> Tween:
+	var tween := node.create_tween()
+	tween.set_loops(0) # Sets loops to infty
+	var base_pos: Vector2 = node.position
+	var slow := 2.0
+	tween.tween_property(node, "position", base_pos + Vector2(0,10), 0.06 * slow).set_ease(Tween.EASE_OUT)
+	tween.tween_property(node, "position", base_pos, 0.45 * slow) \
+		.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	return tween
 func fade(node: CanvasItem, period: float, to_alpha := 0.0) -> Tween:
 	var tween := node.create_tween()
 	tween.tween_property(node, "modulate:a", to_alpha, period)

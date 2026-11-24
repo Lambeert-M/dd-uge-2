@@ -1,6 +1,8 @@
 class_name Board
 extends Node2D
 
+signal grabbed
+
 # Skriftstørrelser til tekst på papirer (blanketter, regelbogens sider osv.)
 const FONT_SIZE := 12
 const TITLE_FONT_SIZE := 16
@@ -63,6 +65,7 @@ func _input(event: InputEvent) -> void:
 			var mouse := get_global_mouse_position()
 			if _contains_point(mouse) and _is_topmost_at(mouse):
 				pressed_on_me = true
+				grabbed.emit()
 				press_start = mouse
 				grab_offset = mouse - global_position
 				# Et klik lægger boardet øverst med det samme (før GUI'en får klikket,

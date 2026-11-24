@@ -154,9 +154,15 @@ func setup_desk() -> void:
 	desk.place_board(letter, Vector2(0, 30))
 	var hint = Label.new()
 	letter.add_child(hint)
-	hint.position = Vector2(0,-50)
-	hint.scale = Vector2(1.5,1.5)
+	hint.position = Vector2(0,-30)
+	hint.add_theme_font_size_override("font_size", 20)
 	hint.text = "Træk mig!"
+	
+	var bob = Tweens.slow_bob(hint)
+	letter.grabbed.connect(func():
+		bob.kill()
+		hint.queue_free(),
+		CONNECT_ONE_SHOT)
 
 	# spawn notepapir, hvor spilleren kan skrive resultater og mellemregninger
 	desk.place_board(NotePaper.new(), Vector2(100, 30))
