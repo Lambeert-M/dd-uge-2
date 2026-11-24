@@ -277,7 +277,7 @@ func _setup_sprint(sprints_completed: int) -> void:
 
 func update_sprint_label() -> void:
 	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
-		% [served_during_sprint, sprint_size, sprint_quota]
+		% [served_during_sprint, sprint_size, TaxForm._kr(sprint_quota)]
 
 func game_over() -> void:
 	Global.game_over = true
