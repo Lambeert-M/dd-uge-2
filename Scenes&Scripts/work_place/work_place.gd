@@ -260,7 +260,7 @@ func _setup_sprint(sprints_completed: int) -> void:
 	update_sprint_label()
 
 func update_sprint_label() -> void:
-	sprint_label.text = "%s/%s customers served. Quota: %s" \
+	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
 
 func game_over() -> void:
@@ -269,7 +269,7 @@ func game_over() -> void:
 	quotas_served = 0
 	Global.savings = 0.0
 	save_user_progess()
-	popup_label.text = "You didn't reach the quota!?"
+	popup_label.text = "Du nåede ikke kvotet?!"
 	popup_label.show()
 	Tweens.wobble(popup_label)
 	
