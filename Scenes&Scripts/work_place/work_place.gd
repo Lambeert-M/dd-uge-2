@@ -150,7 +150,13 @@ func setup_desk() -> void:
 	desk.place_board(rulebook, Vector2(200, 30))
 
 	# spawn velkomstbrevet: en konvolut på skrivebordet, en side når det trækkes væk
-	desk.place_board(Letter.new(WELCOME_LETTER), Vector2(0, 30))
+	var letter = Letter.new(WELCOME_LETTER)
+	desk.place_board(letter, Vector2(0, 30))
+	var hint = Label.new()
+	letter.add_child(hint)
+	hint.position = Vector2(0,-50)
+	hint.scale = Vector2(1.5,1.5)
+	hint.text = "Træk mig!"
 
 func customer_arrive() -> void:
 	if current_customer or is_loading_progress:
