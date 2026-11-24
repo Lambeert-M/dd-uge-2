@@ -4,3 +4,4 @@ extends Dialogue
 func _refresh() -> void:
 	super()                      # sets the text
 	name_label.text = speaker
+	
