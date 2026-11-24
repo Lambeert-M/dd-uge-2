@@ -158,6 +158,9 @@ func setup_desk() -> void:
 	hint.scale = Vector2(1.5,1.5)
 	hint.text = "Træk mig!"
 
+	# spawn notepapir, hvor spilleren kan skrive resultater og mellemregninger
+	desk.place_board(NotePaper.new(), Vector2(100, 30))
+
 func customer_arrive() -> void:
 	if current_customer or is_loading_progress:
 		return
@@ -218,6 +221,7 @@ func complete_quota() -> void:
 	
 	await tween.finished
 	popup_label.hide()
+
 	
 	start_new_sprint()
 
@@ -388,6 +392,8 @@ func set_sprite_size(sprite: Sprite2D, target_size: Vector2) -> void:
 
 # Test function
 func _input(event: InputEvent) -> void:
+	# Mens der skrives i notepapiret, skal "å" skrives og ikke udløse test-genvejen
+	if get_viewport().gui_get_focus_owner() is TextEdit: return
 	if event.is_action_pressed("Test"):
 		#complete_quota()
 		if not current_paper: return
