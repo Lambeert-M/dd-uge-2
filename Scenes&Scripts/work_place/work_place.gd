@@ -150,7 +150,13 @@ func setup_desk() -> void:
 	desk.place_board(rulebook, Vector2(200, 30))
 
 	# spawn velkomstbrevet: en konvolut på skrivebordet, en side når det trækkes væk
-	desk.place_board(Letter.new(WELCOME_LETTER), Vector2(0, 30))
+	var letter = Letter.new(WELCOME_LETTER)
+	desk.place_board(letter, Vector2(0, 30))
+	var hint = Label.new()
+	letter.add_child(hint)
+	hint.position = Vector2(0,-50)
+	hint.scale = Vector2(1.5,1.5)
+	hint.text = "Træk mig!"
 
 	# spawn notepapir, hvor spilleren kan skrive resultater og mellemregninger
 	desk.place_board(NotePaper.new(), Vector2(100, 30))
@@ -216,6 +222,7 @@ func complete_quota() -> void:
 	await tween.finished
 	popup_label.hide()
 
+	
 	start_new_sprint()
 
 # Det, der er tilbage efter kvoten, lægges i opsparingen, og sprintens penge starter forfra
@@ -263,7 +270,7 @@ func _setup_sprint(sprints_completed: int) -> void:
 	update_sprint_label()
 
 func update_sprint_label() -> void:
-	sprint_label.text = "%s/%s customers served. Quota: %s" \
+	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
 		% [served_during_sprint, sprint_size, sprint_quota]
 
 func game_over() -> void:
@@ -272,7 +279,7 @@ func game_over() -> void:
 	quotas_served = 0
 	Global.savings = 0.0
 	save_user_progess()
-	popup_label.text = "You didn't reach the quota!?"
+	popup_label.text = "Du nåede ikke kvotet?!"
 	popup_label.show()
 	Tweens.wobble(popup_label)
 	
@@ -363,10 +370,10 @@ func get_payout() -> void:
 	
 	if payout >= 0:
 		money_popup_label.text = "+%s kr" % payout
-		set("theme_override_colors/font_color", Color.hex(0x40d85a))
+		money_popup_label.add_theme_color_override("font_color", Color.html("#40d85a"))
 	else:
 		money_popup_label.text = "%s kr" % payout
-		set("theme_override_colors/font_color", Color.hex(0xfe0023))
+		money_popup_label.add_theme_color_override("font_color", Color.html("#fe0023"))
 	show_earned_money()
 
 func spawn_calculator() -> void:
