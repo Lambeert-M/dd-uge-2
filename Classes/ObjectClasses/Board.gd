@@ -63,6 +63,9 @@ func _input(event: InputEvent) -> void:
 				pressed_on_me = true
 				press_start = mouse
 				last_mouse = mouse
+				# Et klik lægger boardet øverst med det samme (før GUI'en får klikket,
+				# så felter og knapper på papiret virker stadig)
+				bring_to_front()
 			else:
 				pressed_on_me = false
 				dragging = false
@@ -78,8 +81,9 @@ func _input(event: InputEvent) -> void:
 				dragging = true
 				pressed_on_me = false
 				last_mouse = mouse
-				lift()
-				bring_to_front()
+				# Clipping slået fra: boards hænger ikke længere sammen.
+				# lift() tog alle boards, der lå oven på dette, med i trækket.
+				#lift()
 				_cancel_gui_press()
 		if dragging:
 			if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
@@ -109,9 +113,10 @@ func _is_topmost_at(point: Vector2) -> bool:
 
 func _drop() -> void:
 	dragging = false
-	var target := get_board_under()
-	if target and not is_icon:
-		clip(target)
+	# Clipping slået fra: et board, der slippes oven på et andet, clippes ikke fast.
+	#var target := get_board_under()
+	#if target and not is_icon:
+	#	clip(target)
 	for desk in get_tree().get_nodes_in_group("desks"):
 		desk.board_dropped(self)
 	var mouse = get_global_mouse_position()
@@ -194,6 +199,11 @@ func replace_with(other: Board) -> void:
 	for neighbour in neighbours:
 		other.clip(neighbour)
 
+# --- Clipping (slået fra) ---------------------------------------------------
+# Boards clippes ikke længere sammen: kaldene til clip() i _drop() og lift() i
+# _input() er kommenteret ud. Funktionerne er beholdt, så clipping kan slås til
+# igen, og så !DEBUG-testene stadig kan kalde dem. Uden clips er `clipped` altid
+# tom, og get_group() giver bare [self].
 func clip(other: Board) -> void:
 	if other == self or other in clipped:
 		return

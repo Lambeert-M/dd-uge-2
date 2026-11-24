@@ -45,25 +45,27 @@ func _run() -> void:
 	await bot.click(form_a.global_position + Vector2(10, 10))
 	bot.check(not form_a.answer_field.has_focus(), "Klik på papiret fjerner fokus fra svarfeltet")
 
-	# 4. Slip A oven på B -> de skal clippes sammen
+	# 4. Slip A oven på B -> de må IKKE clippes sammen (clipping er slået fra)
 	grab = form_a.global_position + Vector2(form_a.size.x / 2, 8)
 	var target := form_b.global_position + Vector2(40, 40)
 	await bot.drag(grab, grab + (target - form_a.global_position))
 	bot.check_equal(form_a.global_position, target, "Blanket A landede på B")
-	bot.check(form_b in form_a.clipped and form_a in form_b.clipped, "A og B er clippet sammen")
+	bot.check(form_a.clipped.is_empty() and form_b.clipped.is_empty(), "A og B er ikke clippet sammen")
 	bot.check(form_a.get_index() > form_b.get_index(), "A ligger øverst")
-	await bot.screenshot("03_clippet")
+	await bot.screenshot("03_oven_paa")
 
-	# 5. Træk B (i et hjørne A ikke dækker) -> A skal følge med
+	# 5. Træk B (i et hjørne A ikke dækker) -> A skal blive liggende, og B kommer øverst
 	var a_before := form_a.global_position
 	grab = form_b.global_position + Vector2(10, 10)
 	await bot.drag(grab, grab + Vector2(-200, 100))
 	bot.check_equal(form_b.global_position, Vector2(300, 140), "Blanket B fulgte musen")
-	bot.check_equal(form_a.global_position, a_before + Vector2(-200, 100), "A fulgte med B")
+	bot.check_equal(form_a.global_position, a_before, "A blev liggende, da B blev trukket")
+	bot.check(form_b.get_index() > form_a.get_index(), "B kom øverst, da den blev grebet")
 
-	# 6. A ligger oven på B: svarfeltet skal stadig kunne klikkes
+	# 6. Klik (uden at trække) på A's svarfelt -> A kommer øverst, og feltet får stadig fokus
 	await bot.click(form_a.answer_field.get_global_rect().get_center())
-	bot.check(form_a.answer_field.has_focus(), "Svarfeltet får fokus, når blanketten ligger oven på en anden")
+	bot.check(form_a.get_index() > form_b.get_index(), "Et klik lagde A øverst")
+	bot.check(form_a.answer_field.has_focus(), "Svarfeltet får fokus, selvom klikket også lagde blanketten øverst")
 	await bot.click(form_a.global_position + Vector2(10, 10))
 
 	# 7. Klik på en kunde -> dialogboksen åbner, og klik bladrer igennem replikkerne
