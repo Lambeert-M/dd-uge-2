@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://!DEBUG/DebugScenes/test_leaderboard/test_leaderboard.gd" id="1_leaderboard"]
+
+[node name="TestLeaderboard" type="Node" unique_id=1582047391]
+script = ExtResource("1_leaderboard")

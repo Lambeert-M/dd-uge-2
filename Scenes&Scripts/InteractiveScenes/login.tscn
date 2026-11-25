@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ud74pgyst3jy"]
 
 [ext_resource type="Script" uid="uid://crfmuquw0edrr" path="res://Scenes&Scripts/InteractiveScenes/login.gd" id="1_login"]
+[ext_resource type="Texture2D" uid="uid://c7t3xlhqjjflg" path="res://Resources/UIAssets/titlescreen.jpg" id="2_of46q"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_yyq1l"]
 font_size = 14
@@ -13,6 +14,28 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_login")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1601556741]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_of46q")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1401440242]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.55)
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1720438211]
 layout_mode = 1

@@ -45,6 +45,15 @@ offset_bottom = 470.0
 theme_override_font_sizes/font_size = 48
 text = "Log ind"
 
+[node name="MainMenuLeaderboardButton" type="Button" parent="." unique_id=1374829105]
+layout_mode = 0
+offset_left = 811.0
+offset_top = 494.0
+offset_right = 1131.0
+offset_bottom = 584.0
+theme_override_font_sizes/font_size = 48
+text = "Leaderboard"
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1254674282]
 position = Vector2(958, 539)
 zoom = Vector2(0.601, 0.601)
@@ -99,4 +108,14 @@ offset_top = 16.0
 offset_right = 216.0
 offset_bottom = 39.0
 text = "Ikke logget ind"
+label_settings = SubResource("LabelSettings_npppq")
+
+[node name="PausedGameLabel" type="Label" parent="LoginLayer" unique_id=1843305917]
+unique_name_in_owner = true
+visible = false
+offset_left = 16.0
+offset_top = 44.0
+offset_right = 216.0
+offset_bottom = 67.0
+text = "Tryk PLAY for at fortsætte"
 label_settings = SubResource("LabelSettings_npppq")
