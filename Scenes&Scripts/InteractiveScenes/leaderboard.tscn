@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://6lbtdbk7q21p"]
 
 [ext_resource type="Script" uid="uid://cmri3dxhylpwj" path="res://Scenes&Scripts/InteractiveScenes/leaderboard.gd" id="1_lb_script"]
 [ext_resource type="Texture2D" uid="uid://c7t3xlhqjjflg" path="res://Resources/UIAssets/titlescreen.jpg" id="2_lb_bg"]
@@ -27,7 +27,7 @@ corner_radius_bottom_left = 16
 shadow_color = Color(0, 0, 0, 0.5)
 shadow_size = 12
 
-[node name="Leaderboard" type="Control"]
+[node name="Leaderboard" type="Control" unique_id=1777046533]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -36,7 +36,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lb_script")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=1912506697]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,7 +48,7 @@ texture = ExtResource("2_lb_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Dim" type="ColorRect" parent="."]
+[node name="Dim" type="ColorRect" parent="." unique_id=1911498420]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -58,7 +58,7 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0.55)
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1780150606]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,32 +66,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=2122704480]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1047673188]
 layout_mode = 2
 text = "Leaderboard"
 label_settings = SubResource("LabelSettings_title")
 horizontal_alignment = 1
 
-[node name="TablePanel" type="PanelContainer" parent="CenterContainer/VBoxContainer"]
+[node name="TablePanel" type="PanelContainer" parent="CenterContainer/VBoxContainer" unique_id=1071367809]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_table")
 
-[node name="Rows" type="VBoxContainer" parent="CenterContainer/VBoxContainer/TablePanel"]
+[node name="Rows" type="VBoxContainer" parent="CenterContainer/VBoxContainer/TablePanel" unique_id=825313003]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+[node name="StatusLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=1524673444]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 horizontal_alignment = 1
 
-[node name="BackButton" type="Button" parent="."]
+[node name="BackButton" type="Button" parent="." unique_id=847818564]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(160, 0)
 layout_mode = 1

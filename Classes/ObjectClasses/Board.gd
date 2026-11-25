@@ -59,7 +59,7 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(keep_on_screen)
 
 func _input(event: InputEvent) -> void:
-	if Global.game_over: return
+	if Global.game_over or Global.boards_locked: return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			var mouse := get_global_mouse_position()

@@ -53,6 +53,10 @@ var is_loading_progress := false # ingen kunder, mens fremskridtet hentes
 var has_loaded_progress := false # der gemmes kun, hvis fremskridtet blev hentet
 var is_saving := false
 
+# Dagen (sprinten) er klaret: ingen nye kunder, før spilleren trykker "Start næste dag"
+var is_day_over := false
+var end_screen: EndScreen
+
 
 func _ready() -> void:
 	setup_paper_types()
@@ -168,7 +172,7 @@ func setup_desk() -> void:
 	desk.place_board(NotePaper.new(), Vector2(100, 30))
 
 func customer_arrive() -> void:
-	if current_customer or is_loading_progress:
+	if current_customer or is_loading_progress or is_day_over:
 		return
 	is_serving = true
 	current_customer = Customer.new(Customer.get_random_customer_name())
@@ -214,6 +218,12 @@ func finish_sprint() -> void:
 		game_over()
 
 func complete_quota() -> void:
+	# Klokken virker ikke, før slutskærmen er lukket
+	is_day_over = true
+	# Til slutskærmen. Gemmes før save_money(), som nulstiller sprint_money.
+	var earned := sprint_money
+	var quota := sprint_quota
+
 	# Quota animation
 	popup_label.text = "Kvote opnået!"
 	popup_label.scale = Vector2.ONE
@@ -233,8 +243,18 @@ func complete_quota() -> void:
 	await tween.finished
 	popup_label.hide()
 
-	
+	# Næste dag starter først, når spilleren trykker "Start næste dag"
+	await _show_end_screen(earned, quota, earned - quota)
+	is_day_over = false
 	start_new_sprint()
+
+# Viser dagens resultat og venter, til spilleren trykker "Start næste dag"
+func _show_end_screen(earned: float, quota: float, kept: float) -> void:
+	release_boards() # et papir, der bliver trukket, slippes
+	end_screen = EndScreen.new(earned, quota, kept)
+	add_child(end_screen)
+	await end_screen.closed
+	end_screen = null
 
 # Det, der er tilbage efter kvoten, lægges i opsparingen, og sprintens penge starter forfra
 func save_money() -> void:
