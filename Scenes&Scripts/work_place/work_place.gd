@@ -6,10 +6,12 @@ const EXACT_TOLERANCE := 0.005 # under en halv øre fra det rigtige svar tæller
 const CALCULATOR_SCENE := preload("res://Addons/Calculator/Resources/scenes/calculator.tscn")
 const RULEBOOK := preload("res://Scenes&Scripts/InteractiveScenes/rulebook.tscn")
 const WELCOME_LETTER := "res://Resources/Letters/welcome_letter.txt"
-const FIRST_SPRINT_QUOTA := 40.00
+const FIRST_SPRINT_QUOTA := 20.00
 const RAMP := 1.0
 # Tabellen i Supabase med én række pr. bruger: user_id, sprints_completed, savings
 const PROGRESS_TABLE := "Progress"
+
+const MIN_TOLERANCE := 1.0   # kr: Gauss-kurvens bredde bliver aldrig mindre end dette
 
 # Udsendes, når save_user_progess() er færdig (også hvis det fejlede)
 signal progress_saved
@@ -369,18 +371,19 @@ func get_payout() -> void:
 	var payout: float
 	# Præcis rigtigt giver bonus. Sammenlign med en tolerance, ikke == 0: et korrekt
 	# indtastet svar kan afvige med fx 0.00000000006 pga. afrunding af kommatal.
-	# Tjekkes først, så formlen nedenfor aldrig regner 0 / 0 (= NaN), når svaret er 0 kr.
 	if d_payment < EXACT_TOLERANCE:
 		payout = MAXPAYMENT * 1.25
-	# Der skulle ikke betales noget, men spilleren skrev et beløb
-	elif actual_payment == 0.0:
-		payout = -MAXPAYMENT
 	else:
+		# Kurvens bredde: 10 % af det rigtige svar, men mindst MIN_TOLERANCE.
+		# Uden mindstemålet bliver bredden 0, når der skal betales 0 kr, og så er
+		# selv 0,01 kr "uendeligt" forkert (division med 0).
+		var tolerance := maxf(absf(actual_payment) * 0.1, MIN_TOLERANCE)
+
 		# This distributes the pay according to d_payment via. a Gauss curve
 		# If d_payment == 0, it returns MAXPAY * 1
-		# If d_payment == actual_payment * 0.1, it returns 0
-		# If d_payment >= actual_payment * 0.1, it asymptotically returns MAXPAY * (-1)
-		payout = (2 * pow(1.0/2, pow(d_payment/(actual_payment * 0.1), 2)) - 1) * MAXPAYMENT
+		# If d_payment == tolerance, it returns 0
+		# If d_payment >= tolerance, it asymptotically returns MAXPAY * (-1)
+		payout = snapped((2 * pow(1.0/2, pow(d_payment / tolerance, 2)) - 1) * MAXPAYMENT, 0.01)
 	sprint_money += payout
 	
 	AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/money.mp3")
