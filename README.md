@@ -198,13 +198,13 @@ paper_types.add(MinNyeBlanket, 1.0)
 
 ## Git
 
-Vi arbejder i egne branches og samler dem via pull requests til `master`.
+Vi arbejder i egne branches og samler dem via pull requests til `sprint`, hvorefter vi samler det til `master`, når et sprint er færdigt.
 
 ```
 git switch -c mit-navn          # opret din egen branch
 git push -u origin mit-navn     # første push
 git fetch origin
-git merge origin/master         # hent de andres arbejde ind i din branch
+git merge origin sprint        # hent de andres arbejde ind i din branch
 ```
 
 - Tjek med `git status`, at du står på din egen branch, **før** du committer.
