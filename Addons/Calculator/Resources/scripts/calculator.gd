@@ -24,8 +24,7 @@ func _ready() -> void:
 			continue                    # ikonet ligger allerede i (0, 0)
 		if child is Node2D or child is Control:
 			child.position += shift
-			
-			
+
 #extends Board
 #
 #const CALC_ICON_PATH := "res://Addons/Calculator/Resources/images/calc_icon_placeholder.png"
