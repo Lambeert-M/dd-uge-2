@@ -100,3 +100,13 @@ offset_right = 216.0
 offset_bottom = 39.0
 text = "Ikke logget ind"
 label_settings = SubResource("LabelSettings_npppq")
+
+[node name="PausedGameLabel" type="Label" parent="LoginLayer" unique_id=1843305917]
+unique_name_in_owner = true
+visible = false
+offset_left = 16.0
+offset_top = 44.0
+offset_right = 216.0
+offset_bottom = 67.0
+text = "Tryk PLAY for at fortsætte"
+label_settings = SubResource("LabelSettings_npppq")
