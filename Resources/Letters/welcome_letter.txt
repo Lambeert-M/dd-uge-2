@@ -2,7 +2,7 @@
 Velkommen til Skattekontoret
 
 [LEFT]
-Kære nye medarbejder. VVelkommen til jobbet
+Kære nye medarbejder. Velkommen til jobbet
 
 Du fik jo lige det her job på nød og neppe, da vi har brug for de ypperste indenfor skattetjenesten. Vi forventer store ting af dig.
 
@@ -21,5 +21,10 @@ Når du har udfyldt blanketten, skal du drag-og-drop den til kunden.
 Hvis du ikke gør dit arbejde ordentligt, så sig gerne farvel til dine kære
 
 Med venlig hilsen, Chefen
+ㅤㅤㅤ
+Controls:
+Træk papirer og ting med musen
+Skriv svar og noter med tastatur
+Klik "Esc" for at pause spillet
 
 [RIGHT]

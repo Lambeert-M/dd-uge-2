@@ -1,11 +1,13 @@
 extends Control
 
 const MAIN_SCENE := "res://Scenes&Scripts/main/main.tscn"
+const LEADERBOARD_SCENE := "res://Scenes&Scripts/InteractiveScenes/leaderboard.tscn"
 
 @onready var play_button: TextureButton = $MainMenuPlayButton
 @onready var music_slider: HSlider = %MusicSlider
 @onready var sfx_slider: HSlider = %SfxSlider
 @onready var login_button: Button = $MainMenuLoginButton
+@onready var leaderboard_button: Button = $MainMenuLeaderboardButton
 @onready var login_status_label: Label = %LoginStatusLabel
 @onready var paused_game_label: Label = %PausedGameLabel
 
@@ -13,6 +15,7 @@ const MAIN_SCENE := "res://Scenes&Scripts/main/main.tscn"
 func _ready() -> void:
 	play_button.pressed.connect(button_pressed)
 	login_button.pressed.connect(_on_login_pressed)
+	leaderboard_button.pressed.connect(_on_leaderboard_pressed)
 	if Global.is_logged_in():
 		login_status_label.text = "Logget ind som %s" % Global.current_user["user_name"]
 	else:
@@ -67,3 +70,9 @@ func button_pressed() -> void:
 
 func _on_login_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes&Scripts/InteractiveScenes/login.tscn")
+
+
+# Leaderboardet kan ses af alle, også uden login. Et spil på pause ligger i Global
+# og kan stadig fortsættes, når man kommer tilbage.
+func _on_leaderboard_pressed() -> void:
+	get_tree().change_scene_to_file(LEADERBOARD_SCENE)
