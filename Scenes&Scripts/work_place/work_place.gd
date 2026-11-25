@@ -177,8 +177,10 @@ func customer_arrive() -> void:
 	move_child(current_customer, 1)
 	
 	# Tweens the customer in
+	# Alle tweens her er bundet til arbejdspladsen (create_tween(), ikke get_tree().create_tween()),
+	# så de står stille, mens spillet er på pause uden for scenetræet (Escape, se main.gd)
 	current_customer.position = Vector2(get_viewport_rect().size/2) - Vector2(400,0)
-	var tween = get_tree().create_tween()
+	var tween = create_tween()
 	tween.tween_property(current_customer, "position", Vector2(get_viewport_rect().size/2), 1).set_trans(Tween.TRANS_SINE)
 	
 	await tween.finished
@@ -196,7 +198,7 @@ func customer_leave() -> void:
 	update_sprint_label()
 
 	#Tween the customer out
-	var tween = get_tree().create_tween()
+	var tween = create_tween()
 	tween.tween_property(current_customer, "position", Vector2(get_viewport_rect().size/2 + Vector2(400,0)), 1).set_trans(Tween.TRANS_SINE)
 	
 	await tween.finished
@@ -221,8 +223,11 @@ func complete_quota() -> void:
 	# Gem med det samme, så intet går tabt, hvis spillet lukkes under animationen
 	quotas_served += 1
 	save_user_progess()
-	await get_tree().create_timer(2).timeout
-	var tween := get_tree().create_tween()
+	# En bundet tween i stedet for get_tree().create_timer(), som også tæller under pause
+	var wait := create_tween()
+	wait.tween_interval(2)
+	await wait.finished
+	var tween := create_tween()
 	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
@@ -249,7 +254,7 @@ func show_earned_money() -> void:
 	
 	money_popup_label.show()
 	Tweens.wobble(money_popup_label)
-	var tween = get_tree().create_tween()
+	var tween = create_tween()
 	tween.tween_property(money_popup_label, "position", start_pos + Vector2(0,20), 2) \
 		.from(start_pos) \
 		.set_ease(Tween.EASE_OUT)
@@ -304,18 +309,20 @@ func game_over() -> void:
 	retry_button.position = Vector2(center.x - retry_button.size.x / 2, center.y + 125)
 	
 	
-	var fade := get_tree().create_tween()
+	var fade := create_tween()
 	fade.tween_property(AudioPlayer.music_player, "volume_db", -80.0, 1)
-	
+
 	await fade.finished
-	var bounce := get_tree().create_tween()
+	var bounce := create_tween()
 	bounce.tween_property(game_over_screen, "position", Vector2.ZERO, 1) \
 		.from(Vector2(0,-648)) \
 		.set_trans(Tween.TRANS_BOUNCE) \
 		.set_ease(Tween.EASE_OUT)
-	
+
 	# Plays sound effect on first impact
-	get_tree().create_timer(0.364).timeout.connect(
+	var hit_sound := create_tween()
+	hit_sound.tween_interval(0.364)
+	hit_sound.tween_callback(
 		func(): AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/GameOverScreenFallHit.mp3"))
 	
 	await bounce.finished
@@ -330,6 +337,11 @@ func remove_customer() -> void:
 	current_customer.queue_free()
 	current_customer = null
 	is_serving = false
+
+# Slip alle boards, der bliver trukket (kaldes af main.gd, når spillet sættes på pause)
+func release_boards() -> void:
+	for board in get_tree().get_nodes_in_group("boards"):
+		board.release()
 
 # Fjern blanketten, når kunden har fået den tilbage
 func remove_paper() -> void:

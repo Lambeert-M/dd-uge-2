@@ -101,6 +101,13 @@ func _input(event: InputEvent) -> void:
 		if dragging:
 			get_viewport().set_input_as_handled()
 
+## Slip boardet, som om museknappen blev sluppet. Bruges, når spillet sættes på pause
+## (Escape), så boardet ikke hænger fast i musen, når spillet fortsætter.
+func release() -> void:
+	pressed_on_me = false
+	if dragging:
+		_drop()
+
 # Stopper at en knap under musen "trykkes", når vi har besluttet, at det var et træk
 func _cancel_gui_press() -> void:
 	get_viewport().gui_release_focus()
