@@ -20,6 +20,33 @@ Hver sprint har et antal kunder og en kvote. Når sprintens kunder er serveret, 
 
 Eksempel: En person skal betale indkomstskat af sit normale arbejde. Han afleverer en A-skat-blanket. Du regner ud, hvad han skylder, og udfylder svarfeltet.
 
+### Spilforløb
+
+```mermaid
+flowchart TD
+    A["Kunde kommer<br/>(ring på bjælden)"] --> B["Hilsen<br/>(taleboble vises)"]
+    B --> C["Samtale<br/>(klik på kunden)"]
+    C --> D["Ny blanket lægges på skrivebordet"]
+    D --> E["Regn skat ud og skriv svar"]
+    E --> F["Aflever: slip blanketten på kunden"]
+    F --> G["Udbetaling efter præcision"]
+    G --> H["Kunden går, tæller +1"]
+    H --> I{"Sprint slut?"}
+    I -- "Nej: næste kunde" --> A
+    I -- "Ja" --> J{"Kvote nået?"}
+    J -- "Ja" --> K["Overskud til opsparing, ny sprint"]
+    J -- "Nej" --> L["Game over: fyret, fremskridt nulstilles"]
+    K --> A
+    L --> M["Retry starter forfra"]
+
+    classDef player fill:#E1F5EE,stroke:#0F6E56,color:#085041
+    classDef fail fill:#FAECE7,stroke:#993C1D,color:#712B13
+    class C,E,F player
+    class L,M fail
+```
+
+Blå-grønne trin er det, spilleren selv gør, og rødt er game over.
+
 ### Styring
 
 | Handling | Sådan gør du |
@@ -183,4 +210,3 @@ git merge origin/master         # hent de andres arbejde ind i din branch
 - Tjek med `git status`, at du står på din egen branch, **før** du committer.
 - Mappen `.godot/` og midlertidige filer (`*.tmp`) skal ikke i git. De ligger i `.gitignore`.
 - Scene-filer (`.tscn`) giver nemt merge-konflikter. Aftal, hvem der arbejder i hvilke scener, og pull ofte.
-
