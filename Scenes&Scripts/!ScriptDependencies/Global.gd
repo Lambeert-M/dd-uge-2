@@ -6,6 +6,8 @@ const PIXEL_SCALE := 6.0
 
 # Global variables
 var game_over := false
+# Sand, mens en EndScreen er åben (sættes af EndScreen selv). Boards ignorerer musen imens.
+var boards_locked := false
 
 # Den bruger, der er logget ind: {"id": int, "user_name": String}. Tom = ikke logget ind.
 # Adgangskoden gemmes aldrig her. Log ud med: Global.current_user = {}

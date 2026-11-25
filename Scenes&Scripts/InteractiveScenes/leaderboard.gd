@@ -109,7 +109,7 @@ func _build_table() -> void:
 	var header := StyleBoxEmpty.new()
 	header.content_margin_left = ROW_PADDING_X
 	header.content_margin_right = ROW_PADDING_X
-	_add_row(header, ["Rank", "Name", "Money"], HEADER_FONT_SIZE, HEADER_COLOR)
+	_add_row(header, ["Rang", "Navn", "Penge"], HEADER_FONT_SIZE, HEADER_COLOR)
 	rows_box.add_child(HSeparator.new())
 
 	for i in TOP_COUNT:

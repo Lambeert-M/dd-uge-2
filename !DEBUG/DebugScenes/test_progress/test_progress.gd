@@ -60,8 +60,8 @@ func _run() -> void:
 	if row is Dictionary:
 		bot.check_equal(int(row["sprints_completed"]), 1, "Databasen har 1 klaret sprint")
 		bot.check_near(float(row["savings"]), 6.0, 0.001, "Databasen har 6 kr sparet op")
-	bot.check(await _wait_until(func(): return wp.sprint_size == 4, ANIMATION_TIMEOUT),
-		"Næste sprint starter efter animationen")
+	bot.check(await _start_next_day(wp), "Slutskærmen vises efter animationen")
+	bot.check_equal(wp.sprint_size, 4, "Næste sprint starter, når \"Start næste dag\" trykkes")
 	var quota_4: float = snappedf(wp.get_sprint_quota(4), 0.01)
 	bot.check_near(wp.sprint_quota, quota_4, 0.001, "Næste sprint har kvoten for 4 kunder")
 
@@ -107,8 +107,8 @@ func _run() -> void:
 	wp.sprint_money = 50.0
 	wp.finish_sprint()
 	bot.check(not wp.is_saving, "En gæsts sprint gemmes ikke")
-	bot.check(await _wait_until(func(): return wp.sprint_size == 4, ANIMATION_TIMEOUT),
-		"Gæstens næste sprint starter efter animationen")
+	bot.check(await _start_next_day(wp), "Gæsten får slutskærmen efter animationen")
+	bot.check_equal(wp.sprint_size, 4, "Gæstens næste sprint starter, når \"Start næste dag\" trykkes")
 	wp.queue_free()
 	await bot.wait_frames(2)
 	Global.savings = 0.0
@@ -131,6 +131,13 @@ func _progress_row(user_id: int) -> Variant:
 	if task.error != null or not task.data is Array:
 		return "fejl: %s" % [task.error]
 	return task.data[0] if not task.data.is_empty() else null
+
+# Vent på slutskærmen (EndScreen) og tryk "Start næste dag". false, hvis den aldrig kom.
+func _start_next_day(wp) -> bool:
+	if not await _wait_until(func(): return wp.end_screen != null, ANIMATION_TIMEOUT):
+		return false
+	wp.end_screen.next_day_button.pressed.emit()
+	return true
 
 # Vent til condition() er sand, højst timeout sekunder
 func _wait_until(condition: Callable, timeout: float) -> bool:
