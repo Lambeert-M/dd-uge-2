@@ -6,10 +6,12 @@ const EXACT_TOLERANCE := 0.005 # under en halv øre fra det rigtige svar tæller
 const CALCULATOR_SCENE := preload("res://Addons/Calculator/Resources/scenes/calculator.tscn")
 const RULEBOOK := preload("res://Scenes&Scripts/InteractiveScenes/rulebook.tscn")
 const WELCOME_LETTER := "res://Resources/Letters/welcome_letter.txt"
-const FIRST_SPRINT_QUOTA := 40.00
+const FIRST_SPRINT_QUOTA := 20.00
 const RAMP := 1.0
 # Tabellen i Supabase med én række pr. bruger: user_id, sprints_completed, savings
 const PROGRESS_TABLE := "Progress"
+
+const MIN_TOLERANCE := 1.0   # kr: Gauss-kurvens bredde bliver aldrig mindre end dette
 
 # Udsendes, når save_user_progess() er færdig (også hvis det fejlede)
 signal progress_saved
@@ -52,6 +54,10 @@ var sprint_money := 0.00:
 var is_loading_progress := false # ingen kunder, mens fremskridtet hentes
 var has_loaded_progress := false # der gemmes kun, hvis fremskridtet blev hentet
 var is_saving := false
+
+# Dagen (sprinten) er klaret: ingen nye kunder, før spilleren trykker "Start næste dag"
+var is_day_over := false
+var end_screen: EndScreen
 
 
 func _ready() -> void:
@@ -150,10 +156,25 @@ func setup_desk() -> void:
 	desk.place_board(rulebook, Vector2(200, 30))
 
 	# spawn velkomstbrevet: en konvolut på skrivebordet, en side når det trækkes væk
-	desk.place_board(Letter.new(WELCOME_LETTER), Vector2(0, 30))
+	var letter = Letter.new(WELCOME_LETTER)
+	desk.place_board(letter, Vector2(0, 30))
+	var hint = Label.new()
+	letter.add_child(hint)
+	hint.position = Vector2(0,-30)
+	hint.add_theme_font_size_override("font_size", 20)
+	hint.text = "Træk mig!"
+	
+	var bob = Tweens.slow_bob(hint)
+	letter.grabbed.connect(func():
+		bob.kill()
+		hint.queue_free(),
+		CONNECT_ONE_SHOT)
+
+	# spawn notepapir, hvor spilleren kan skrive resultater og mellemregninger
+	desk.place_board(NotePaper.new(), Vector2(100, 30))
 
 func customer_arrive() -> void:
-	if current_customer or is_loading_progress:
+	if current_customer or is_loading_progress or is_day_over:
 		return
 	is_serving = true
 	current_customer = Customer.new(Customer.get_random_customer_name())
@@ -162,8 +183,10 @@ func customer_arrive() -> void:
 	move_child(current_customer, 1)
 	
 	# Tweens the customer in
+	# Alle tweens her er bundet til arbejdspladsen (create_tween(), ikke get_tree().create_tween()),
+	# så de står stille, mens spillet er på pause uden for scenetræet (Escape, se main.gd)
 	current_customer.position = Vector2(get_viewport_rect().size/2) - Vector2(400,0)
-	var tween = get_tree().create_tween()
+	var tween = create_tween()
 	tween.tween_property(current_customer, "position", Vector2(get_viewport_rect().size/2), 1).set_trans(Tween.TRANS_SINE)
 	
 	await tween.finished
@@ -181,7 +204,7 @@ func customer_leave() -> void:
 	update_sprint_label()
 
 	#Tween the customer out
-	var tween = get_tree().create_tween()
+	var tween = create_tween()
 	tween.tween_property(current_customer, "position", Vector2(get_viewport_rect().size/2 + Vector2(400,0)), 1).set_trans(Tween.TRANS_SINE)
 	
 	await tween.finished
@@ -197,6 +220,12 @@ func finish_sprint() -> void:
 		game_over()
 
 func complete_quota() -> void:
+	# Klokken virker ikke, før slutskærmen er lukket
+	is_day_over = true
+	# Til slutskærmen. Gemmes før save_money(), som nulstiller sprint_money.
+	var earned := sprint_money
+	var quota := sprint_quota
+
 	# Quota animation
 	popup_label.text = "Kvote opnået!"
 	popup_label.scale = Vector2.ONE
@@ -206,14 +235,28 @@ func complete_quota() -> void:
 	# Gem med det samme, så intet går tabt, hvis spillet lukkes under animationen
 	quotas_served += 1
 	save_user_progess()
-	await get_tree().create_timer(2).timeout
-	var tween := get_tree().create_tween()
+	# En bundet tween i stedet for get_tree().create_timer(), som også tæller under pause
+	var wait := create_tween()
+	wait.tween_interval(2)
+	await wait.finished
+	var tween := create_tween()
 	tween.tween_property(popup_label, "scale", Vector2.ZERO, 1.0).set_ease(Tween.EASE_IN)
 	
 	await tween.finished
 	popup_label.hide()
-	
+
+	# Næste dag starter først, når spilleren trykker "Start næste dag"
+	await _show_end_screen(earned, quota, earned - quota)
+	is_day_over = false
 	start_new_sprint()
+
+# Viser dagens resultat og venter, til spilleren trykker "Start næste dag"
+func _show_end_screen(earned: float, quota: float, kept: float) -> void:
+	release_boards() # et papir, der bliver trukket, slippes
+	end_screen = EndScreen.new(earned, quota, kept)
+	add_child(end_screen)
+	await end_screen.closed
+	end_screen = null
 
 # Det, der er tilbage efter kvoten, lægges i opsparingen, og sprintens penge starter forfra
 func save_money() -> void:
@@ -233,7 +276,7 @@ func show_earned_money() -> void:
 	
 	money_popup_label.show()
 	Tweens.wobble(money_popup_label)
-	var tween = get_tree().create_tween()
+	var tween = create_tween()
 	tween.tween_property(money_popup_label, "position", start_pos + Vector2(0,20), 2) \
 		.from(start_pos) \
 		.set_ease(Tween.EASE_OUT)
@@ -261,7 +304,7 @@ func _setup_sprint(sprints_completed: int) -> void:
 
 func update_sprint_label() -> void:
 	sprint_label.text = "%s/%s kunder tjent. Kvote: %s" \
-		% [served_during_sprint, sprint_size, sprint_quota]
+		% [served_during_sprint, sprint_size, TaxForm._kr(sprint_quota)]
 
 func game_over() -> void:
 	Global.game_over = true
@@ -288,18 +331,20 @@ func game_over() -> void:
 	retry_button.position = Vector2(center.x - retry_button.size.x / 2, center.y + 125)
 	
 	
-	var fade := get_tree().create_tween()
+	var fade := create_tween()
 	fade.tween_property(AudioPlayer.music_player, "volume_db", -80.0, 1)
-	
+
 	await fade.finished
-	var bounce := get_tree().create_tween()
+	var bounce := create_tween()
 	bounce.tween_property(game_over_screen, "position", Vector2.ZERO, 1) \
 		.from(Vector2(0,-648)) \
 		.set_trans(Tween.TRANS_BOUNCE) \
 		.set_ease(Tween.EASE_OUT)
-	
+
 	# Plays sound effect on first impact
-	get_tree().create_timer(0.364).timeout.connect(
+	var hit_sound := create_tween()
+	hit_sound.tween_interval(0.364)
+	hit_sound.tween_callback(
 		func(): AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/GameOverScreenFallHit.mp3"))
 	
 	await bounce.finished
@@ -314,6 +359,11 @@ func remove_customer() -> void:
 	current_customer.queue_free()
 	current_customer = null
 	is_serving = false
+
+# Slip alle boards, der bliver trukket (kaldes af main.gd, når spillet sættes på pause)
+func release_boards() -> void:
+	for board in get_tree().get_nodes_in_group("boards"):
+		board.release()
 
 # Fjern blanketten, når kunden har fået den tilbage
 func remove_paper() -> void:
@@ -341,18 +391,19 @@ func get_payout() -> void:
 	var payout: float
 	# Præcis rigtigt giver bonus. Sammenlign med en tolerance, ikke == 0: et korrekt
 	# indtastet svar kan afvige med fx 0.00000000006 pga. afrunding af kommatal.
-	# Tjekkes først, så formlen nedenfor aldrig regner 0 / 0 (= NaN), når svaret er 0 kr.
 	if d_payment < EXACT_TOLERANCE:
 		payout = MAXPAYMENT * 1.25
-	# Der skulle ikke betales noget, men spilleren skrev et beløb
-	elif actual_payment == 0.0:
-		payout = -MAXPAYMENT
 	else:
+		# Kurvens bredde: 10 % af det rigtige svar, men mindst MIN_TOLERANCE.
+		# Uden mindstemålet bliver bredden 0, når der skal betales 0 kr, og så er
+		# selv 0,01 kr "uendeligt" forkert (division med 0).
+		var tolerance := maxf(absf(actual_payment) * 0.1, MIN_TOLERANCE)
+
 		# This distributes the pay according to d_payment via. a Gauss curve
 		# If d_payment == 0, it returns MAXPAY * 1
-		# If d_payment == actual_payment * 0.1, it returns 0
-		# If d_payment >= actual_payment * 0.1, it asymptotically returns MAXPAY * (-1)
-		payout = (2 * pow(1.0/2, pow(d_payment/(actual_payment * 0.1), 2)) - 1) * MAXPAYMENT
+		# If d_payment == tolerance, it returns 0
+		# If d_payment >= tolerance, it asymptotically returns MAXPAY * (-1)
+		payout = snapped((2 * pow(1.0/2, pow(d_payment / tolerance, 2)) - 1) * MAXPAYMENT, 0.01)
 	sprint_money += payout
 	
 	AudioPlayer.play_sound_effect("res://Resources/Audio/SoundEffects/AnimationSoundEffects/money.mp3")
@@ -382,6 +433,8 @@ func set_sprite_size(sprite: Sprite2D, target_size: Vector2) -> void:
 
 # Test function
 func _input(event: InputEvent) -> void:
+	# Mens der skrives i notepapiret, skal "å" skrives og ikke udløse test-genvejen
+	if get_viewport().gui_get_focus_owner() is TextEdit: return
 	if event.is_action_pressed("Test"):
 		#complete_quota()
 		if not current_paper: return

@@ -8,6 +8,7 @@ extends Control
 @onready var history_pnl = get_node("history_pnl")
 @onready var memory_pnl = get_node("memory_pnl")
 @onready var overlay = get_node("overlay")
+@onready var copyBtn = get_node("copy_btn")
 
 # Variables
 var has_been_used = false
@@ -28,7 +29,19 @@ func _ready():
 	for btn in btnContainer.get_children():
 		if btn.name.is_valid_int():
 			btn.pressed.connect(Callable(self, "_numButtons").bind(btn))
+	
+	copyBtn.pressed.connect(_on_copy_btn_pressed)
+	await get_tree().process_frame
+	_place_copy_button()
 
+func _place_copy_button() -> void:
+	var rect: Rect2 = workArea.get_global_rect()
+	var parent := copyBtn.get_parent() as Control
+	copyBtn.position = parent.get_global_transform().affine_inverse() * Vector2(rect.position.x, rect.end.y)
+	copyBtn.expand_icon = true
+	copyBtn.custom_minimum_size = Vector2(40, 30)
+	copyBtn.size = Vector2(40, 30)
+	copyBtn.position += Vector2(0, -50)
 
 #----------------------------------------------------------------
 # All number buttons are connected to this function via a signal.
@@ -223,6 +236,10 @@ func _on_period_btn_pressed():
 		workArea.text = "0."
 		has_been_used = true
 
+
+func _on_copy_btn_pressed():
+	var value: float = workArea.text.to_float()
+	DisplayServer.clipboard_set("%.2f" % value)
 
 #----------------------------------------------------------------
 # Make the memory panel visible

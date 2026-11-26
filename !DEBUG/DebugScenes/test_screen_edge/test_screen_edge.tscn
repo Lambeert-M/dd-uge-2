@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://!DEBUG/DebugScenes/test_screen_edge/test_screen_edge.gd" id="1_edge"]
+
+[node name="TestScreenEdge" type="Node2D"]
+script = ExtResource("1_edge")

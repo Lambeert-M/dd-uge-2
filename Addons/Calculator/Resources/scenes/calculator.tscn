@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://rw0wvfawg83w" path="res://Addons/Calculator/Resources/images/Delete.svg" id="3_ayn2l"]
 [ext_resource type="Texture2D" uid="uid://b8ktpbhugqlrp" path="res://Addons/Calculator/Resources/images/1x.svg" id="4_s3cnc"]
 [ext_resource type="Texture2D" uid="uid://cgp33u4pqmoup" path="res://Addons/Calculator/Resources/images/XPower2.svg" id="5_7mkcc"]
+[ext_resource type="Texture2D" uid="uid://7wx80cmd6p0g" path="res://Addons/Calculator/Resources/images/copy.svg" id="5_s3cnc"]
 [ext_resource type="Texture2D" uid="uid://dehljeigx3fgr" path="res://Addons/Calculator/Resources/images/Squareroot.svg" id="6_of3ud"]
 [ext_resource type="Texture2D" uid="uid://e13xpqse5u8m" path="res://Addons/Calculator/Resources/images/Divide.svg" id="7_nbywl"]
 [ext_resource type="StyleBox" uid="uid://fvrh3yejfmaq" path="res://Addons/Calculator/Resources/others/numButton_normal.tres" id="8_x845x"]
@@ -773,6 +774,15 @@ grow_vertical = 2
 texture = ExtResource("15_d68co")
 expand_mode = 1
 stretch_mode = 5
+
+[node name="copy_btn" type="Button" parent="CalculatorControl" unique_id=787153885]
+layout_mode = 0
+offset_left = -233.0
+offset_top = -440.0
+offset_right = 279.0
+offset_bottom = 72.0
+focus_mode = 0
+icon = ExtResource("5_s3cnc")
 
 [connection signal="pressed" from="CalculatorControl/Screen/Button_container/OperationBtn_container/clearEq_btn" to="CalculatorControl" method="_on_clear_eq_btn_pressed"]
 [connection signal="pressed" from="CalculatorControl/Screen/Button_container/OperationBtn_container/clear_btn" to="CalculatorControl" method="_on_clear_btn_pressed"]

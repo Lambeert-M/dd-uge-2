@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://!DEBUG/DebugScenes/test_end_screen/test_end_screen.gd" id="1_endscreen"]
+
+[node name="TestEndScreen" type="Node" unique_id=1584203917]
+script = ExtResource("1_endscreen")

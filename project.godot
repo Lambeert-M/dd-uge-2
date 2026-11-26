@@ -13,7 +13,7 @@ config_version=5
 config/name="DDUge2Game"
 run/main_scene="uid://cxftbpdnvtbgb"
 config/features=PackedStringArray("4.7", "Forward Plus")
-config/icon="uid://brq1481fdqylt"
+config/icon="uid://beg1jy3sgqu3p"
 
 [autoload]
 
